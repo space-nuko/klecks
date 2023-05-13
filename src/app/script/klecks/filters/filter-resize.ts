@@ -1,12 +1,12 @@
-import {BB} from '../../bb/bb';
-import {Checkbox} from '../ui/components/checkbox';
-import {Select} from '../ui/components/select';
-import constrainImg from '/src/app/img/ui/constrain.svg';
-import {IFilterApply, IFilterGetDialogParam, IFilterGetDialogResult} from '../kl-types';
-import {LANG} from '../../language/language';
-import {TFilterHistoryEntry} from './filters';
-import {table} from '../ui/components/table';
-import {theme} from '../../theme/theme';
+import { BB } from '../../bb/bb';
+import { Checkbox } from '../ui/components/checkbox';
+import { Select } from '../ui/components/select';
+import constrainImg from '../../../img/ui/constrain.svg';
+import { IFilterApply, IFilterGetDialogParam, IFilterGetDialogResult } from '../kl-types';
+import { LANG } from '../../language/language';
+import { TFilterHistoryEntry } from './filters';
+import { table } from '../ui/components/table';
+import { theme } from '../../theme/theme';
 
 export type TFilterResizeInput = {
     width: number;
@@ -20,14 +20,14 @@ export type TFilterResizeHistoryEntry = TFilterHistoryEntry<
 
 export const filterResize = {
 
-    getDialog (params: IFilterGetDialogParam) {
+    getDialog(params: IFilterGetDialogParam) {
         //BB.centerWithin
         const klCanvas = params.klCanvas;
         if (!klCanvas) {
             return false;
         }
 
-        const fit = BB.fitInto( klCanvas.getWidth(), klCanvas.getHeight(), 280, 200,1);
+        const fit = BB.fitInto(klCanvas.getWidth(), klCanvas.getHeight(), 280, 200, 1);
         const w = parseInt('' + fit.width), h = parseInt('' + fit.height);
 
         let previewFactor = w / klCanvas.getWidth();
@@ -85,21 +85,21 @@ export const filterResize = {
                 value: '' + klCanvas.getHeight(),
             },
         }) as HTMLInputElement;
-        widthInput.onclick = function () {
+        widthInput.onclick = function() {
             (this as any).focus();
             widthChanged = true;
             update();
         };
-        heightInput.onclick = function () {
+        heightInput.onclick = function() {
             (this as any).focus();
             heightChanged = true;
             update();
         };
-        widthInput.onchange = function () {
+        widthInput.onchange = function() {
             widthChanged = true;
             update();
         };
-        heightInput.onchange = function () {
+        heightInput.onchange = function() {
             heightChanged = true;
             update();
         };
@@ -123,7 +123,7 @@ export const filterResize = {
                 constrainIm,
             ],
             [
-                BB.el({css: {height: '5px'}}),
+                BB.el({ css: { height: '5px' } }),
                 '',
                 '',
             ],
@@ -132,7 +132,7 @@ export const filterResize = {
                 heightInput,
             ],
         ], {
-            '0.2': {rowspan: 3},
+            '0.2': { rowspan: 3 },
         });
         BB.css(sizeTable, {
             marginBottom: '10px',
@@ -144,7 +144,7 @@ export const filterResize = {
         let heightChanged = false, widthChanged = false;
         const ratio = klCanvas.getWidth() / klCanvas.getHeight();
 
-        function updateConstrain (): void {
+        function updateConstrain(): void {
             constrainIm.style.display = isConstrained ? '' : 'none';
             if (isConstrained) {
                 widthInput.value = '' + klCanvas.getWidth();
@@ -158,7 +158,7 @@ export const filterResize = {
             init: true,
             label: LANG('constrain-proportions'),
             allowTab: true,
-            callback: function (b) {
+            callback: function(b) {
                 isConstrained = b;
                 updateConstrain();
             },
@@ -178,7 +178,7 @@ export const filterResize = {
             ],
             title: LANG('scaling-algorithm'),
             initValue: 'smooth',
-            onChange: function () {
+            onChange: function() {
                 update();
             },
         });
@@ -200,7 +200,7 @@ export const filterResize = {
         const previewCtx = BB.ctx(previewCanvas);
 
 
-        function draw (): void {
+        function draw(): void {
             if (algorithmSelect.getValue() === 'smooth') {
                 previewCanvas.style.imageRendering = previewFactor > 1 ? 'pixelated' : '';
 
@@ -226,7 +226,7 @@ export const filterResize = {
 
         }
 
-        function update (): void {
+        function update(): void {
             if ((widthInput.value.length === 0 && widthChanged) || (heightInput.value.length === 0 && heightChanged)) {
                 heightChanged = false;
                 widthChanged = false;
@@ -303,8 +303,8 @@ export const filterResize = {
             },
         });
 
-        function updateCheckerboard (): void {
-            BB.createCheckerDataUrl(8, function (url) {
+        function updateCheckerboard(): void {
+            BB.createCheckerDataUrl(8, function(url) {
                 previewWrapper.style.background = 'url(' + url + ')';
             }, theme.isDark());
         }
@@ -319,7 +319,7 @@ export const filterResize = {
             constrainCheckbox.destroy();
             theme.removeIsDarkListener(updateCheckerboard);
         };
-        result.getInput = function (): TFilterResizeInput {
+        result.getInput = function(): TFilterResizeInput {
             result.destroy();
             return {
                 width: newWidth,
@@ -330,7 +330,7 @@ export const filterResize = {
         return result;
     },
 
-    apply (params: IFilterApply<TFilterResizeInput>): boolean {
+    apply(params: IFilterApply<TFilterResizeInput>): boolean {
         const klCanvas = params.klCanvas;
         const history = params.history;
         const width = params.input.width;

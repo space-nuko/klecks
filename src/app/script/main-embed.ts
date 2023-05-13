@@ -1,120 +1,134 @@
 import './polyfills/polyfills';
-import {KlApp} from './app/kl-app';
-import {IKlProject} from './klecks/kl-types';
-import {SaveReminder} from './klecks/ui/components/save-reminder';
-import {klHistory} from './klecks/history/kl-history';
-import {klPsdToKlProject, readPsd} from './klecks/storage/psd';
-import {LANG} from './language/language';
-import {loadAgPsd} from './klecks/storage/load-ag-psd';
+import { KlApp } from './app/kl-app';
+import { IKlProject } from './klecks/kl-types';
+import { SaveReminder } from './klecks/ui/components/save-reminder';
+import { klHistory } from './klecks/history/kl-history';
+import { klPsdToKlProject, readPsd } from './klecks/storage/psd';
+import { LANG } from './language/language';
+import { loadAgPsd } from './klecks/storage/load-ag-psd';
 
 export interface IEmbedParams {
     project?: IKlProject;
     psdBlob?: Blob;
     onSubmit: (onSuccess: () => void, onError: () => void) => void;
-    embedUrl: string;
+    embedUrl?: string;
     logoImg?: any;
     bottomBar?: HTMLElement;
     aboutEl?: HTMLElement;
+    targetEl?: HTMLElement;
 }
 
 export interface IReadPSD {
     blob: Blob;
-    callback: (k: IKlProject) => void;
+    callback: (k: IKlProject | null) => void;
 }
 
-export function Embed (p: IEmbedParams) {
+export class Embed {
+    isInitialized: boolean = false;
+    klApp: KlApp | null = null;
+    psdQueue: IReadPSD[] = []; // queue of psds waiting while ag-psd is loading
+    agPsd: any | 'error';
 
-    let isInitialized: boolean = false;
-    let klApp;
-    const psdQueue: IReadPSD[] = []; // queue of psds waiting while ag-psd is loading
-    let agPsd: any | 'error';
+    loadingScreenEl: HTMLElement | null;
+    loadingScreenTextEl: HTMLElement | null;
 
-    let loadingScreenEl = document.getElementById('loading-screen');
-    let loadingScreenTextEl = document.getElementById('loading-screen-text');
-    if (loadingScreenTextEl) {
-        loadingScreenTextEl.textContent = LANG('embed-init-waiting');
+    p: IEmbedParams;
+
+    constructor(p: IEmbedParams) {
+        this.p = p;
+        this.loadingScreenEl = document.getElementById('klecks-loading-screen');
+        this.loadingScreenTextEl = document.getElementById('klecks-loading-screen-text');
+
+        if (this.loadingScreenTextEl) {
+            this.loadingScreenTextEl.textContent = LANG('embed-init-waiting');
+        }
+
+        if (p.project) {
+            this.openProject(p.project);
+        }
     }
 
-    function onProjectReady (project: IKlProject) {
+    openProject(project: IKlProject) {
         try {
-            if (isInitialized) {
+            if (this.isInitialized) {
                 throw new Error('Already called openProject');
             }
-            isInitialized = true;
+            this.isInitialized = true;
 
             const saveReminder = new SaveReminder(
                 klHistory,
                 false,
                 false,
-                () => {},
-                () => klApp ? klApp.isDrawing() : false,
+                () => { },
+                () => this.klApp ? this.klApp.isDrawing() : false,
                 null,
                 null,
             );
-            klApp = new KlApp(
+            this.klApp = new KlApp(
                 project,
                 {
                     saveReminder,
-                    bottomBar: p.bottomBar,
-                    aboutEl: p.aboutEl,
+                    bottomBar: this.p.bottomBar,
+                    aboutEl: this.p.aboutEl,
                     embed: {
-                        url: p.embedUrl,
-                        onSubmit: p.onSubmit,
+                        url: this.p.embedUrl,
+                        onSubmit: this.p.onSubmit,
                     },
+                    targetEl: this.p.targetEl
                 }
             );
             saveReminder.init();
 
-            if (loadingScreenEl && loadingScreenEl.parentNode) {
-                loadingScreenEl.parentNode.removeChild(loadingScreenEl);
+            if (this.loadingScreenEl && this.loadingScreenEl.parentNode) {
+                this.loadingScreenEl.parentNode.removeChild(this.loadingScreenEl);
             }
-            loadingScreenEl = null;
-            loadingScreenTextEl = null;
+            this.loadingScreenEl = null;
+            this.loadingScreenTextEl = null;
 
-            document.body.append(klApp.getEl());
+            const target = this.p.targetEl || document.body;
+            target.append(this.klApp.getEl());
         } catch (e) {
-            if (loadingScreenTextEl) {
-                loadingScreenTextEl.textContent = '❌ ' + e;
+            if (this.loadingScreenTextEl) {
+                this.loadingScreenTextEl.textContent = '❌ ' + e;
             }
-            if (loadingScreenEl) {
-                loadingScreenEl.className += 'loading-screen-error';
+            if (this.loadingScreenEl) {
+                this.loadingScreenEl.className += 'loading-screen-error';
             }
             console.error(e);
         }
     }
 
-    if (p.project) {
-        onProjectReady(p.project);
+    initError(error: string) {
+        if (this.loadingScreenTextEl) {
+            this.loadingScreenTextEl.textContent = '❌ ' + error;
+        }
+        if (this.loadingScreenEl) {
+            this.loadingScreenEl.className += 'loading-screen-error';
+        }
+    };
+
+    getPNG(): Blob {
+        if (!this.klApp) {
+            throw new Error('App not initialized');
+        }
+        return this.klApp.getPNG();
     }
-    this.openProject = onProjectReady;
-    this.initError = (error: string) => {
-        if (loadingScreenTextEl) {
-            loadingScreenTextEl.textContent = '❌ ' + error;
-        }
-        if (loadingScreenEl) {
-            loadingScreenEl.className += 'loading-screen-error';
-        }
-    };
-    this.getPNG = (): Blob => {
-        if (!klApp) {
+
+    async getPSD(): Promise<Blob> {
+        if (!this.klApp) {
             throw new Error('App not initialized');
         }
-        return klApp.getPNG();
-    };
-    this.getPSD = async (): Promise<Blob> => {
-        if (!klApp) {
-            throw new Error('App not initialized');
-        }
-        return await klApp.getPSD();
-    };
-    this.readPSDs = (psds: IReadPSD[]) => {
+        return await this.klApp.getPSD();
+    }
+
+    async readPSDs(psds: IReadPSD[]) {
         if (psds.length === 0) {
             return;
         }
 
         const readItem = (item: IReadPSD) => {
             try {
-                const psd = agPsd.readPsd(item.blob);
+                const psd = this.agPsd.readPsd(item.blob);
                 const project = klPsdToKlProject(readPsd(psd));
                 item.callback(project);
             } catch (e) {
@@ -123,25 +137,23 @@ export function Embed (p: IEmbedParams) {
             }
         };
 
-        if (!agPsd) {
-            if (psdQueue.length === 0) {
+        if (!this.agPsd) {
+            if (this.psdQueue.length === 0) {
                 // load ag-psd
-                (async () => {
-                    try {
-                        agPsd = await loadAgPsd();
-                    } catch (e) {
-                        agPsd = 'error';
-                    }
-                    while (psdQueue.length) {
-                        readItem(psdQueue.shift());
-                    }
-                })();
+                try {
+                    this.agPsd = await loadAgPsd();
+                } catch (e) {
+                    this.agPsd = 'error';
+                }
+                while (this.psdQueue.length) {
+                    readItem(this.psdQueue.shift() as IReadPSD);
+                }
             }
             psds.forEach(item => {
-                psdQueue.push(item);
+                this.psdQueue.push(item);
             });
         } else {
             psds.forEach(readItem);
         }
-    };
+    }
 }

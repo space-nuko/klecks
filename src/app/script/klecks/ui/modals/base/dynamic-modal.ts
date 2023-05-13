@@ -1,9 +1,9 @@
-import {KeyListener} from '../../../../bb/input/key-listener';
-import {dialogCounter} from '../modal-count';
-import {BB} from '../../../../bb/bb';
-import {LANG} from '../../../../language/language';
+import { KeyListener } from '../../../../bb/input/key-listener';
+import { dialogCounter } from '../modal-count';
+import { BB } from '../../../../bb/bb';
+import { LANG } from '../../../../language/language';
 import './scroll-fix';
-import cancelImg from '/src/app/img/ui/cancel.svg';
+import cancelImg from '../../../../../img/ui/cancel.svg';
 
 /**
  * popup that fill whole height, with some padding.
@@ -21,7 +21,7 @@ export class DynamicModal {
 
 
     // ---- public ----
-    constructor (
+    constructor(
         p: {
             title?: HTMLElement;
             content?: HTMLElement;
@@ -152,7 +152,7 @@ export class DynamicModal {
     }
 
     // ---- interface ----
-    close (): void {
+    close(): void {
         dialogCounter.decrease();
         BB.destroyEl(this.rootEl);
         this.parent.removeChild(this.rootEl);

@@ -1,23 +1,23 @@
-import {BB} from '../../bb/bb';
-import {IRGB, ITransform, TDrawEvent} from '../kl-types';
-import {WorkspaceSvgOverlay} from './workspace-svg-overlay';
-import {klHistory} from '../history/kl-history';
-import pickerImg from '/src/app/img/ui/cursor-picker.png';
-import zoomEwImg from '/src/app/img/ui/cursor-zoom-ew.png';
-import fillImg from '/src/app/img/ui/cursor-fill.png';
-import textImg from '/src/app/img/ui/cursor-text.png';
-import {IPressureInput, IVector2D} from '../../bb/bb-types';
-import {KlCanvas} from '../canvas/kl-canvas';
-import {KeyListener} from '../../bb/input/key-listener';
-import {KL} from '../kl';
-import {IPointerEvent} from '../../bb/input/event.types';
-import {LinetoolProcessor} from '../events/linetool-processor';
-import {PinchZoomer} from '../../bb/input/event-chain/pinch-zoomer';
-import {DoubleTapper} from '../../bb/input/event-chain/double-tapper';
-import {NFingerTapper} from '../../bb/input/event-chain/n-finger-tapper';
-import {EventChain} from '../../bb/input/event-chain/event-chain';
-import {PointerListener} from '../../bb/input/pointer-listener';
-import {theme} from '../../theme/theme';
+import { BB } from '../../bb/bb';
+import { IRGB, ITransform, TDrawEvent } from '../kl-types';
+import { WorkspaceSvgOverlay } from './workspace-svg-overlay';
+import { klHistory } from '../history/kl-history';
+import pickerImg from '../../../img/ui/cursor-picker.png';
+import zoomEwImg from '../../../img/ui/cursor-zoom-ew.png';
+import fillImg from '../../../img/ui/cursor-fill.png';
+import textImg from '../../../img/ui/cursor-text.png';
+import { IPressureInput, IVector2D } from '../../bb/bb-types';
+import { KlCanvas } from '../canvas/kl-canvas';
+import { KeyListener } from '../../bb/input/key-listener';
+import { KL } from '../kl';
+import { IPointerEvent } from '../../bb/input/event.types';
+import { LinetoolProcessor } from '../events/linetool-processor';
+import { PinchZoomer } from '../../bb/input/event-chain/pinch-zoomer';
+import { DoubleTapper } from '../../bb/input/event-chain/double-tapper';
+import { NFingerTapper } from '../../bb/input/event-chain/n-finger-tapper';
+import { EventChain } from '../../bb/input/event-chain/event-chain';
+import { PointerListener } from '../../bb/input/pointer-listener';
+import { theme } from '../../theme/theme';
 
 export interface IViewChangeEvent {
     changed: ('scale' | 'angle')[];
@@ -103,9 +103,9 @@ export class KlCanvasWorkspace {
     private lastRenderedState: number; // KlHistory state - to detect if there are changes to draw
     private lastRenderTime: number; // ms from performance.now()
     private hideBrushCursorTimeout: (ReturnType<typeof setTimeout>) | undefined;
-    private readonly onViewChange: (e:  IViewChangeEvent) => void;
+    private readonly onViewChange: (e: IViewChangeEvent) => void;
 
-    private getRenderedTransform (): ITransform {
+    private getRenderedTransform(): ITransform {
         // rounded x & y so canvas is less blurry.
         const result = this.renderedTransformObj;
         result.x = this.highResTransformObj.x;
@@ -121,14 +121,14 @@ export class KlCanvasWorkspace {
         return result;
     }
 
-    private updateChangeListener (): void {
+    private updateChangeListener(): void {
         this.klCanvas.addChangeListener(() => {
             this.lastRenderedState = -1;
             this.reqFrame();
         });
     }
 
-    private updateCursor (modeInt: TMode, doForce?: boolean): void {
+    private updateCursor(modeInt: TMode, doForce?: boolean): void {
         if (modeInt === this.currentMode && !doForce) {
             return;
         }
@@ -171,7 +171,7 @@ export class KlCanvasWorkspace {
         }
 
         if (this.currentMode !== TMode.Pick) {
-            this.svgOverlay.updateColorPreview({isVisible: false});
+            this.svgOverlay.updateColorPreview({ isVisible: false });
         }
     }
 
@@ -182,7 +182,7 @@ export class KlCanvasWorkspace {
      * @param centerY
      * @private
      */
-    private internalZoomByStep (stepNum: number, centerX: number, centerY: number): boolean {
+    private internalZoomByStep(stepNum: number, centerX: number, centerY: number): boolean {
         const step = Math.log2(this.targetTransformObj.scale);
 
         let newStep = step / Math.abs(stepNum);
@@ -222,7 +222,7 @@ export class KlCanvasWorkspace {
      * @param blendFactor 0 -> A, 1 -> B
      * @private
      */
-    private mixTransformObj (transformA: ITransform, transformB: ITransform, blendFactor: number): void {
+    private mixTransformObj(transformA: ITransform, transformB: ITransform, blendFactor: number): void {
         if (transformA.angle === transformB.angle) {
             transformA.scale = BB.mix(transformA.scale, transformB.scale, blendFactor);
             transformA.x = BB.mix(transformA.x, transformB.x, blendFactor);
@@ -245,8 +245,8 @@ export class KlCanvasWorkspace {
         }, transformB);
 
         // --- centerPosMixed ---
-        transformA.x = BB.mix(centerPosA.x , centerPosB.x, blendFactor);
-        transformA.y = BB.mix(centerPosA.y , centerPosB.y, blendFactor);
+        transformA.x = BB.mix(centerPosA.x, centerPosB.x, blendFactor);
+        transformA.y = BB.mix(centerPosA.y, centerPosB.y, blendFactor);
 
         // --- scale and angle ---
         transformA.scale = BB.mix(transformA.scale, transformB.scale, blendFactor);
@@ -261,7 +261,7 @@ export class KlCanvasWorkspace {
         transformA.y = mixedPos.y;
     }
 
-    private render (): void {
+    private render(): void {
         if (this.doResizeCanvas) {
             this.doResizeCanvas = false;
             this.renderTargetCanvas.width = this.renderWidth;
@@ -274,7 +274,7 @@ export class KlCanvasWorkspace {
      * is the gray background that surrounds canvas visible?
      * @private
      */
-    private testBgVisible (): boolean {
+    private testBgVisible(): boolean {
         //bring workspace points (corners of workspace) into canvas coordinate system
         //then check if any corner point is outside of the canvas -> that means the bg is visible
 
@@ -289,7 +289,7 @@ export class KlCanvasWorkspace {
 
         //setup transformation matrix
         let matrix = BB.Matrix.getIdentity();
-        matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createScaleMatrix(1/art.scale));
+        matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createScaleMatrix(1 / art.scale));
         matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createRotationMatrix(-art.angle));
         matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createTranslationMatrix(-art.x, -art.y));
 
@@ -301,7 +301,7 @@ export class KlCanvasWorkspace {
             if (
                 !(0 <= coords[0] && coords[0] <= this.klCanvas.getWidth() &&
                     0 <= coords[1] && coords[1] <= this.klCanvas.getHeight())
-            ){
+            ) {
                 //if not inside -> bg visible
                 return true;
             }
@@ -309,7 +309,7 @@ export class KlCanvasWorkspace {
         return false;
     }
 
-    private renderContext (ctx: CanvasRenderingContext2D): void {
+    private renderContext(ctx: CanvasRenderingContext2D): void {
         const w = this.klCanvas.getWidth();
         const h = this.klCanvas.getHeight();
 
@@ -320,7 +320,7 @@ export class KlCanvasWorkspace {
             ctx.imageSmoothingEnabled = false;
         } else {
             ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality  = 'low'; // art.scale >= 1 ? 'low' : 'medium';
+            ctx.imageSmoothingQuality = 'low'; // art.scale >= 1 ? 'low' : 'medium';
         }
         //ctx.imageSmoothingEnabled = false;
         //renderTargetCtx.globalCompositeOperation  = 'multiply';
@@ -415,10 +415,10 @@ export class KlCanvasWorkspace {
         }
     }
 
-    private workspaceToCanvasCoord (p: IVector2D): IVector2D {
+    private workspaceToCanvasCoord(p: IVector2D): IVector2D {
         const art = this.getRenderedTransform();
         let matrix = BB.Matrix.getIdentity();
-        matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createScaleMatrix(1/art.scale));
+        matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createScaleMatrix(1 / art.scale));
         matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createRotationMatrix(-art.angle));
         matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createTranslationMatrix(-art.x, -art.y));
 
@@ -431,7 +431,7 @@ export class KlCanvasWorkspace {
         };
     }
 
-    private canvasToWorkspaceCoord (p: IVector2D, transformObj: ITransform): IVector2D {
+    private canvasToWorkspaceCoord(p: IVector2D, transformObj: ITransform): IVector2D {
         let matrix = BB.Matrix.getIdentity();
         matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createTranslationMatrix(transformObj.x, transformObj.y));
         matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createRotationMatrix(transformObj.angle));
@@ -446,7 +446,7 @@ export class KlCanvasWorkspace {
         };
     }
 
-    private snapAngleRad (angleRad: number, snapDegIncrement: number, maxDistDeg: number): number {
+    private snapAngleRad(angleRad: number, snapDegIncrement: number, maxDistDeg: number): number {
         let angleDeg = angleRad * 180 / Math.PI;
         const modDeg = Math.abs(angleDeg % snapDegIncrement);
         const dist = Math.min(modDeg, snapDegIncrement - modDeg);
@@ -463,7 +463,7 @@ export class KlCanvasWorkspace {
      * @param angleRad
      * @private
      */
-    private minimizeAngleRad (angleRad: number): number {
+    private minimizeAngleRad(angleRad: number): number {
         angleRad = angleRad % (2 * Math.PI);
         if (angleRad > Math.PI) {
             angleRad -= 2 * Math.PI;
@@ -473,20 +473,20 @@ export class KlCanvasWorkspace {
         return angleRad;
     }
 
-    private resetInputProcessor (): void {
+    private resetInputProcessor(): void {
         this.currentInputProcessor = null;
         this.updateCursor(this.globalMode);
         this.reqFrame(true);
     }
 
-    private reqFrame (doRedrawCanvas?: boolean): void {
+    private reqFrame(doRedrawCanvas?: boolean): void {
         this.animationFrameRequested = true;
         if (doRedrawCanvas) {
             this.lastRenderedState = -1;
         }
     }
 
-    private updateLoop (): void {
+    private updateLoop(): void {
         window.requestAnimationFrame(() => this.updateLoop());
         const newState = klHistory.getState();
         const doRender = this.lastRenderedState < newState;
@@ -502,7 +502,7 @@ export class KlCanvasWorkspace {
         }
     }
 
-    private checkChange (elapsedFrames: number): void {
+    private checkChange(elapsedFrames: number): void {
 
         const newState = klHistory.getState();
         const doRender = this.lastRenderedState < newState ||
@@ -527,7 +527,7 @@ export class KlCanvasWorkspace {
                 this.bgVisible = this.testBgVisible();
             }
 
-            this.svgOverlay.updateCursor({radius: this.brushRadius * this.highResTransformObj.scale});
+            this.svgOverlay.updateCursor({ radius: this.brushRadius * this.highResTransformObj.scale });
         } else if (
             (this.highResTransformObj.x === this.targetTransformObj.x || Math.abs(this.highResTransformObj.x - this.targetTransformObj.x) < 0.5) &&
             (this.highResTransformObj.y === this.targetTransformObj.y || Math.abs(this.highResTransformObj.y - this.targetTransformObj.y) < 0.5) &&
@@ -540,19 +540,19 @@ export class KlCanvasWorkspace {
             this.highResTransformObj.x = this.targetTransformObj.x;
             this.highResTransformObj.y = this.targetTransformObj.y;
             this.highResTransformObj.angle = this.targetTransformObj.angle;
-            this. doAnimateTranslate = false;
+            this.doAnimateTranslate = false;
             if (this.transformIsDirty) {
                 this.transformIsDirty = false;
                 this.bgVisible = this.testBgVisible();
             }
 
-            this.svgOverlay.updateCursor({radius: this.brushRadius * this.highResTransformObj.scale});
+            this.svgOverlay.updateCursor({ radius: this.brushRadius * this.highResTransformObj.scale });
         } else {
             this.reqFrame(); //probably needs another frame
             const blendFactor = Math.min(1, ANIMATION_SPEED * elapsedFrames);
             this.mixTransformObj(this.highResTransformObj, this.targetTransformObj, blendFactor);
             this.bgVisible = true; // spare yourself the calculation
-            this.svgOverlay.updateCursor({radius: this.brushRadius * this.highResTransformObj.scale});
+            this.svgOverlay.updateCursor({ radius: this.brushRadius * this.highResTransformObj.scale });
         }
 
         if (this.pointer && this.currentMode == TMode.Draw && !this.usesCssCursor) {
@@ -562,7 +562,7 @@ export class KlCanvasWorkspace {
                 isVisible: true,
             });
         } else {
-            this.svgOverlay.updateCursor({isVisible: false});
+            this.svgOverlay.updateCursor({ isVisible: false });
         }
 
 
@@ -586,7 +586,7 @@ export class KlCanvasWorkspace {
 
     // ---- public ----
 
-    constructor (
+    constructor(
         p: {
             klCanvas: any; // todo
             width: number;
@@ -597,7 +597,7 @@ export class KlCanvasWorkspace {
             onGradient: (type: 'down' | 'up' | 'move', canvasX: number, canvasY: number, angleRad: number) => void;
             onText: (canvasX: number, canvasY: number, angleRad: number) => void;
             onShape: (type: 'down' | 'up' | 'move', canvasX: number, canvasY: number, angleRad: number) => void;
-            onViewChange: (e:  IViewChangeEvent) => void;
+            onViewChange: (e: IViewChangeEvent) => void;
             onUndo: () => void;
             onRedo: () => void;
         }
@@ -671,7 +671,7 @@ export class KlCanvasWorkspace {
         });
 
         this.rootEl.append(this.renderTargetCanvas, this.svgOverlay.getElement());
-        this.rootEl.addEventListener( 'touchend', (e) => {
+        this.rootEl.addEventListener('touchend', (e) => {
             e.preventDefault();
             return false;
         });
@@ -765,7 +765,7 @@ export class KlCanvasWorkspace {
                 const getMatrix = () => {
                     const art = this.getRenderedTransform();
                     let matrix = BB.Matrix.getIdentity();
-                    matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createScaleMatrix(1/art.scale));
+                    matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createScaleMatrix(1 / art.scale));
                     matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createRotationMatrix(-art.angle));
                     matrix = BB.Matrix.multiplyMatrices(matrix, BB.Matrix.createTranslationMatrix(-art.x, -art.y));
                     return matrix;
@@ -881,7 +881,7 @@ export class KlCanvasWorkspace {
                     this.updateCursor(TMode.Fill);
 
                     if (event.type === 'pointerdown') {
-                        const coord = this.workspaceToCanvasCoord({x: event.relX, y: event.relY});
+                        const coord = this.workspaceToCanvasCoord({ x: event.relX, y: event.relY });
                         p.onFill(Math.floor(coord.x), Math.floor(coord.y));
 
                     } else if (event.type === 'pointerup') {
@@ -903,7 +903,7 @@ export class KlCanvasWorkspace {
 
                     this.reqFrame();
                     this.updateCursor(TMode.Gradient);
-                    const coord = this.workspaceToCanvasCoord({x: event.relX, y: event.relY});
+                    const coord = this.workspaceToCanvasCoord({ x: event.relX, y: event.relY });
 
                     if (event.type === 'pointerdown') {
                         this.isDrawing = true;
@@ -933,7 +933,7 @@ export class KlCanvasWorkspace {
                     this.updateCursor(TMode.Text);
 
                     if (event.type === 'pointerdown') {
-                        const coord = this.workspaceToCanvasCoord({x: event.relX, y: event.relY});
+                        const coord = this.workspaceToCanvasCoord({ x: event.relX, y: event.relY });
                         p.onText(Math.floor(coord.x), Math.floor(coord.y), this.renderedTransformObj.angle);
 
                     } else if (event.type === 'pointerup') {
@@ -955,7 +955,7 @@ export class KlCanvasWorkspace {
 
                     this.reqFrame();
                     this.updateCursor(TMode.Shape);
-                    const coord = this.workspaceToCanvasCoord({x: event.relX, y: event.relY});
+                    const coord = this.workspaceToCanvasCoord({ x: event.relX, y: event.relY });
 
                     if (event.type === 'pointerdown') {
                         this.isDrawing = true;
@@ -1063,7 +1063,7 @@ export class KlCanvasWorkspace {
                         (['left', 'right'].includes(event.button) && !event.isCoalesced) ||
                         event.type === 'pointerup'
                     ) {
-                        const coord = this.workspaceToCanvasCoord({x: event.relX, y: event.relY});
+                        const coord = this.workspaceToCanvasCoord({ x: event.relX, y: event.relY });
                         const pickedColor = this.klCanvas.getColorAt(coord.x, coord.y);
                         p.onPick(pickedColor, event.type === 'pointerup');
                         this.svgOverlay.updateColorPreview({
@@ -1092,7 +1092,7 @@ export class KlCanvasWorkspace {
                         (['left', 'right'].includes(event.button) && !event.isCoalesced) ||
                         event.type === 'pointerup'
                     ) {
-                        const coord = this.workspaceToCanvasCoord({x: event.relX, y: event.relY});
+                        const coord = this.workspaceToCanvasCoord({ x: event.relX, y: event.relY });
                         const pickedColor = this.klCanvas.getColorAt(coord.x, coord.y);
                         p.onPick(pickedColor, event.type === 'pointerup');
                         this.svgOverlay.updateColorPreview({
@@ -1131,8 +1131,8 @@ export class KlCanvasWorkspace {
                             y: this.renderHeight / 2,
                         };
 
-                        const startAngleRad = BB.Vec2.angle(centerObj, {x: event.downPageX - offsetX, y: event.downPageY - offsetY});
-                        const angleRad = BB.Vec2.angle(centerObj, {x: event.pageX - offsetX, y: event.pageY - offsetY});
+                        const startAngleRad = BB.Vec2.angle(centerObj, { x: event.downPageX - offsetX, y: event.downPageY - offsetY });
+                        const angleRad = BB.Vec2.angle(centerObj, { x: event.pageX - offsetX, y: event.pageY - offsetY });
                         let dAngleRad = angleRad - startAngleRad;
 
                         //apply angle
@@ -1466,7 +1466,7 @@ export class KlCanvasWorkspace {
                     if (e.type === 'pointerdown' && e.button === 'middle') {
                         try {
                             e.eventPreventDefault();
-                        } catch (e) {}
+                        } catch (e) { }
                     }
                     // prevent manual slider input keeping focus on iPad
                     if (e.type === 'pointerdown') {
@@ -1532,11 +1532,11 @@ export class KlCanvasWorkspace {
     }
 
 
-    getElement (): HTMLElement {
+    getElement(): HTMLElement {
         return this.rootEl;
     }
 
-    setCanvas (klC: KlCanvas): void {
+    setCanvas(klC: KlCanvas): void {
         this.klCanvas = klC;
         this.lastDrawEvent = null;
         this.resetView();
@@ -1552,7 +1552,7 @@ export class KlCanvasWorkspace {
      * @param width
      * @param height
      */
-    setSize (width: number, height: number): void {
+    setSize(width: number, height: number): void {
         const oldWidth = this.renderWidth;
         const oldHeight = this.renderHeight;
 
@@ -1578,7 +1578,7 @@ export class KlCanvasWorkspace {
         this.reqFrame();
     }
 
-    setMode (modeStr: TModeStr): void {
+    setMode(modeStr: TModeStr): void {
         //only sets the base mode
         if (modeStr === 'draw') {
             this.globalMode = TMode.Draw;
@@ -1610,7 +1610,7 @@ export class KlCanvasWorkspace {
         }
     }
 
-    getMode (): TModeStr {
+    getMode(): TModeStr {
         if (this.globalMode === TMode.Draw) {
             return 'draw';
         }
@@ -1634,14 +1634,14 @@ export class KlCanvasWorkspace {
         }
     }
 
-    setEnabled (b: boolean): void {
+    setEnabled(b: boolean): void {
         // todo
     }
 
-    setCursorSize (diameter: number): void {
+    setCursorSize(diameter: number): void {
         this.brushRadius = diameter / 2;
 
-        this.svgOverlay.updateCursor({radius: this.brushRadius * this.highResTransformObj.scale});
+        this.svgOverlay.updateCursor({ radius: this.brushRadius * this.highResTransformObj.scale });
 
         if (this.pointer === null) {
             this.hideBrushCursorTimeout && clearTimeout(this.hideBrushCursorTimeout);
@@ -1656,12 +1656,12 @@ export class KlCanvasWorkspace {
                 if (this.pointer !== null) {
                     return;
                 }
-                this.svgOverlay.updateCursor({isVisible: false});
+                this.svgOverlay.updateCursor({ isVisible: false });
             }, 500);
         }
     }
 
-    zoomByStep (stepNum: number): void {
+    zoomByStep(stepNum: number): void {
         if (!this.internalZoomByStep(stepNum, this.renderWidth / 2, this.renderHeight / 2)) {
             return;
         }
@@ -1676,7 +1676,7 @@ export class KlCanvasWorkspace {
         });
     }
 
-    resetView (doAnimate?: boolean): void {
+    resetView(doAnimate?: boolean): void {
         this.targetTransformObj.scale = 1;
         this.targetTransformObj.angle = 0;
 
@@ -1706,7 +1706,7 @@ export class KlCanvasWorkspace {
      * fit into view. center. snap angle. padding
      * returns true if transform changes
      */
-    fitView (): boolean {
+    fitView(): boolean {
         // determine new transform
         const newAngle = this.snapAngleRad(this.targetTransformObj.angle, 90, 90);
 
@@ -1758,9 +1758,9 @@ export class KlCanvasWorkspace {
         const padding = 0;
         const { width: fitWidth } = BB.fitInto(
             boundsWidth,
-            boundsHeight, 
-            this.renderWidth - padding, 
-            this.renderHeight - padding, 
+            boundsHeight,
+            this.renderWidth - padding,
+            this.renderHeight - padding,
             1
         );
 
@@ -1796,7 +1796,7 @@ export class KlCanvasWorkspace {
         return true;
     }
 
-    setAngle (angleDeg: number, isRelative?: boolean): void {
+    setAngle(angleDeg: number, isRelative?: boolean): void {
         //rotation done around center
         const centerObj = {
             x: this.renderWidth / 2,
@@ -1841,7 +1841,7 @@ export class KlCanvasWorkspace {
      * @param tx
      * @param ty
      */
-    translateView (tx: number, ty: number): void {
+    translateView(tx: number, ty: number): void {
         const scale = 40;
 
         this.targetTransformObj.x += tx * scale;
@@ -1852,39 +1852,39 @@ export class KlCanvasWorkspace {
         this.reqFrame(true);
     }
 
-    getIsDrawing (): boolean {
+    getIsDrawing(): boolean {
         return this.isDrawing;
     }
 
-    getScale (): number {
+    getScale(): number {
         return this.targetTransformObj.scale;
     }
 
-    getAngleDeg (): number {
+    getAngleDeg(): number {
         return this.targetTransformObj.angle * 180 / Math.PI;
     }
 
-    getMaxScale (): number {
+    getMaxScale(): number {
         return MAX_SCALE;
     }
 
-    getMinScale (): number {
+    getMinScale(): number {
         return MIN_SCALE;
     }
 
-    requestFrame (): void {
+    requestFrame(): void {
         this.lastRenderedState = -1;
         this.reqFrame();
     }
 
-    setLastDrawEvent (x: number | null, y?: number, pressure?: number): void {
+    setLastDrawEvent(x: number | null, y?: number, pressure?: number): void {
         if (x === null) {
             this.lastDrawEvent = null;
             return;
         }
 
         if (!this.lastDrawEvent) {
-            this.lastDrawEvent = {x: 0, y: 0, pressure: 0};
+            this.lastDrawEvent = { x: 0, y: 0, pressure: 0 };
         }
         this.lastDrawEvent.x = x;
         this.lastDrawEvent.y = y;

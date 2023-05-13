@@ -1,14 +1,14 @@
-import {createCanvas} from '../../bb/base/create-canvas';
-import {BlendMode, Layer, Psd} from 'ag-psd/dist/psd';
-import {IKlProject, IKlPsd, TKlPsdError, TMixMode} from '../kl-types';
-import {LANG} from '../../language/language';
-import {MAX_LAYERS} from '../canvas/kl-canvas';
-import {BB} from '../../bb/bb';
+import { createCanvas } from '../../bb/base/create-canvas';
+import { BlendMode, Layer, Psd } from 'ag-psd/dist/psd';
+import { IKlProject, IKlPsd, TKlPsdError, TMixMode } from '../kl-types';
+import { LANG } from '../../language/language';
+import { MAX_LAYERS } from '../canvas/kl-canvas';
+import { BB } from '../../bb/bb';
 
 let kl2PsdMap: Record<TMixMode, BlendMode>;
 let psd2KlMap: Record<BlendMode, TMixMode>;
 
-function init (): void {
+function init(): void {
     if (kl2PsdMap) {
         return;
     }
@@ -38,12 +38,12 @@ function init (): void {
     psd2KlMap = Object.fromEntries(Object.entries(kl2PsdMap).map(a => a.reverse()));
 }
 
-export function blendPsdToKl (str: BlendMode): TMixMode {
+export function blendPsdToKl(str: BlendMode): TMixMode {
     init();
     return psd2KlMap[str];
 }
 
-export function blendKlToPsd (str: TMixMode): BlendMode {
+export function blendKlToPsd(str: TMixMode): BlendMode {
     init();
     return kl2PsdMap[str];
 }
@@ -53,7 +53,7 @@ export function blendKlToPsd (str: TMixMode): BlendMode {
  * Converts ag-psd object into something that KlCanvas can represent
  * @param psdObj
  */
-export function readPsd (psdObj: Psd): IKlPsd {
+export function readPsd(psdObj: Psd): IKlPsd {
     if (!psdObj.canvas) {
         throw new Error('psdObj.canvas undefined');
     }
@@ -64,7 +64,7 @@ export function readPsd (psdObj: Psd): IKlPsd {
         height: psdObj.height,
     };
 
-    function addWarning (warningStr: TKlPsdError): void {
+    function addWarning(warningStr: TKlPsdError): void {
         if (!result.warningArr) {
             result.warningArr = [];
         }
@@ -74,7 +74,7 @@ export function readPsd (psdObj: Psd): IKlPsd {
         result.warningArr.push(warningStr);
     }
 
-    function getMixModeStr (blendMode: BlendMode): TMixMode {
+    function getMixModeStr(blendMode: BlendMode): TMixMode {
         let mixModeStr: TMixMode = blendPsdToKl(blendMode);
         if (!mixModeStr) {
             addWarning('blend-mode');
@@ -95,7 +95,7 @@ export function readPsd (psdObj: Psd): IKlPsd {
     // count resulting layers
     const maxLayers = MAX_LAYERS;
     let layerCount = 0;
-    function countWithinGroup (groupObj: Layer): number {
+    function countWithinGroup(groupObj: Layer): number {
         let result = 0;
         if (groupObj.blendMode) {
             const mixModeStr = blendPsdToKl(groupObj.blendMode);
@@ -128,7 +128,7 @@ export function readPsd (psdObj: Psd): IKlPsd {
 
     result.layers = [];
 
-    function prepareMask (maskCanvas: HTMLCanvasElement, defaultColor: number): void {
+    function prepareMask(maskCanvas: HTMLCanvasElement, defaultColor: number): void {
         const groupMaskCtx = BB.ctx(maskCanvas);
         const imData = groupMaskCtx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
         if (defaultColor === 0) {
@@ -143,7 +143,7 @@ export function readPsd (psdObj: Psd): IKlPsd {
         groupMaskCtx.putImageData(imData, 0, 0);
     }
 
-    function convertGroup (psdGroupObj: Layer): {
+    function convertGroup(psdGroupObj: Layer): {
         name: string;
         mixModeStr: TMixMode;
         opacity: number;
@@ -375,7 +375,7 @@ export function readPsd (psdObj: Psd): IKlPsd {
                 if (item.blendMode === undefined) {
                     throw new Error('item.blendMode undefined');
                 }
-                if (item.hidden  === undefined) {
+                if (item.hidden === undefined) {
                     throw new Error('item.hidden  undefined');
                 }
                 if (item.opacity === undefined) {
@@ -433,7 +433,7 @@ export function readPsd (psdObj: Psd): IKlPsd {
     return result;
 }
 
-export function klPsdToKlProject (klPsd: IKlPsd): IKlProject {
+export function klPsdToKlProject(klPsd: IKlPsd): IKlProject {
     // only share references to Canvas elements
     const result: IKlProject = {
         width: klPsd.width,

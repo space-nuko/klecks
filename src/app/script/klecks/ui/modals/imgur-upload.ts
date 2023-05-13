@@ -1,10 +1,10 @@
-import {BB} from '../../../bb/bb';
-import {KL} from '../../kl';
-import {SaveReminder} from '../components/save-reminder';
-import {base64ToBlob} from '../../storage/base-64-to-blob';
-import {KlCanvas} from '../../canvas/kl-canvas';
-import {LANG} from '../../../language/language';
-import loadingImg from '/src/app/img/ui/loading.gif';
+import { BB } from '../../../bb/bb';
+import { KL } from '../../kl';
+import { SaveReminder } from '../components/save-reminder';
+import { base64ToBlob } from '../../storage/base-64-to-blob';
+import { KlCanvas } from '../../canvas/kl-canvas';
+import { LANG } from '../../../language/language';
+import loadingImg from '../../../../img/ui/loading.gif';
 
 type TImgurUploadResponse = {
     // just a subset
@@ -21,7 +21,7 @@ type TImgurUploadResponse = {
 /**
  * uploads canvas, opens new tab with the upload progress & then opens the image page.
  */
-async function upload (
+async function upload(
     canvas: HTMLCanvasElement,
     title: string,
     description: string,
@@ -48,7 +48,7 @@ async function upload (
         backgroundImage: 'linear-gradient(#2b2b2b 0%, #121211 50%)',
         backgroundRepeat: 'no-repeat',
     });
-    
+
     const labelText = w.document.createElement('div');
     labelText.style.marginTop = '10px';
     label.append(labelText);
@@ -66,7 +66,7 @@ async function upload (
         opacity: '0',
         color: '#ccc',
     });
-    setTimeout(function () {
+    setTimeout(function() {
         label.style.opacity = '1';
     }, 20);
 
@@ -76,7 +76,7 @@ async function upload (
         formData.append('title', title);
         formData.append('description', description);
         formData.append('image', img);
-        response = await fetch('https://api.imgur.com/3/image',  {
+        response = await fetch('https://api.imgur.com/3/image', {
             method: 'POST',
             headers: {
                 Authorization: 'Client-ID ' + imgurKey,
@@ -100,7 +100,7 @@ async function upload (
 }
 
 
-export function imgurUpload (
+export function imgurUpload(
     klCanvas: KlCanvas,
     klRootEl: HTMLElement,
     saveReminder: SaveReminder,
@@ -110,7 +110,7 @@ export function imgurUpload (
         throw new Error('imgur key missing');
     }
 
-    const inputTitle = BB.el({tagName: 'input'}) as HTMLInputElement;
+    const inputTitle = BB.el({ tagName: 'input' }) as HTMLInputElement;
     inputTitle.type = 'text';
     inputTitle.value = LANG('upload-title-untitled');
     const inputDescription = BB.el({
@@ -124,7 +124,7 @@ export function imgurUpload (
         },
     }) as HTMLTextAreaElement;
 
-    const labelTitle =  BB.el({
+    const labelTitle = BB.el({
         textContent: LANG('upload-name') + ':',
     });
     const labelDescription = BB.el({
@@ -175,7 +175,7 @@ export function imgurUpload (
         clickOnEnter: LANG('upload-submit'),
         primaries: [LANG('upload-submit')],
         autoFocus: LANG('upload-submit'),
-        callback: async function (val) {
+        callback: async function(val) {
             if (val === LANG('upload-submit') || val === 'Yes' || val === 'Ok') {
                 try {
                     const result = await upload(
@@ -194,7 +194,7 @@ export function imgurUpload (
                     });
                     saveReminder.reset();
 
-                } catch(e) {
+                } catch (e) {
                     KL.popup({
                         target: klRootEl,
                         type: 'error',

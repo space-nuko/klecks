@@ -1,16 +1,16 @@
-import {BB} from '../../bb/bb';
-import {eventResMs} from './brushes-consts';
-import {Checkbox} from '../ui/components/checkbox';
-import {brushes} from '../brushes/brushes';
-import {klHistory} from '../history/kl-history';
-import {KlSlider} from '../ui/components/kl-slider';
-import brushIconImg from '/src/app/img/ui/brush-chemy.svg';
-import {IBrushUi} from '../kl-types';
-import {Options} from '../ui/components/options';
-import {BoxToggle} from '../ui/components/box-toggle';
-import {LANG, languageStrings} from '../../language/language';
+import { BB } from '../../bb/bb';
+import { eventResMs } from './brushes-consts';
+import { Checkbox } from '../ui/components/checkbox';
+import { brushes } from '../brushes/brushes';
+import { klHistory } from '../history/kl-history';
+import { KlSlider } from '../ui/components/kl-slider';
+import brushIconImg from '../../../img/ui/brush-chemy.svg';
+import { IBrushUi } from '../kl-types';
+import { Options } from '../ui/components/options';
+import { BoxToggle } from '../ui/components/box-toggle';
+import { LANG, languageStrings } from '../../language/language';
 
-export const chemyBrushUi = (function () {
+export const chemyBrushUi = (function() {
     const brushInterface: IBrushUi = {
         image: brushIconImg,
         tooltip: LANG('brush-chemy'),
@@ -31,7 +31,7 @@ export const chemyBrushUi = (function () {
         brushInterface.tooltip = LANG('brush-chemy');
     });
 
-    brushInterface.Ui = function (p) {
+    brushInterface.Ui = function(p) {
         const div = document.createElement('div'); // the gui
         const brush = new brushes.ChemyBrush();
         brush.setHistory(klHistory);
@@ -40,11 +40,11 @@ export const chemyBrushUi = (function () {
         let sizeSlider: KlSlider;
         let opacitySlider: KlSlider;
 
-        function setSize (size) {
+        function setSize(size) {
             brush.setSize(size);
         }
 
-        function init () {
+        function init() {
             sizeSlider = new KlSlider({
                 label: LANG('brush-size'),
                 width: 250,
@@ -93,7 +93,7 @@ export const chemyBrushUi = (function () {
             const eraserToggle = new Checkbox({
                 init: brush.getIsEraser(),
                 label: LANG('eraser'),
-                callback: function (b) {
+                callback: function(b) {
                     brush.setIsEraser(b);
                 },
                 css: {
@@ -105,7 +105,7 @@ export const chemyBrushUi = (function () {
             const lockAlphaToggle = new Checkbox({
                 init: brush.getLockAlpha(),
                 label: LANG('lock-alpha'),
-                callback: function (b) {
+                callback: function(b) {
                     brush.setLockAlpha(b);
                 },
                 doHighlight: true,
@@ -311,54 +311,54 @@ export const chemyBrushUi = (function () {
 
         init();
 
-        this.increaseSize = function (f) {
+        this.increaseSize = function(f) {
             if (!brush.getIsDrawing() && brush.getMode() === 'stroke') {
                 sizeSlider.changeSliderValue(f);
             }
         };
-        this.decreaseSize = function (f) {
+        this.decreaseSize = function(f) {
             if (!brush.getIsDrawing() && brush.getMode() === 'stroke') {
                 sizeSlider.changeSliderValue(-f);
             }
         };
 
-        this.getSize = function () {
+        this.getSize = function() {
             return brush.getSize();
         };
-        this.setSize = function (size) {
+        this.setSize = function(size) {
             setSize(size);
             sizeSlider.setValue(size);
         };
-        this.getOpacity = function () {
+        this.getOpacity = function() {
             return brush.getOpacity();
         };
-        this.setOpacity = function (opacity) {
+        this.setOpacity = function(opacity) {
             brush.setOpacity(opacity);
             opacitySlider.setValue(opacity);
         };
 
-        this.setColor = function (c) {
+        this.setColor = function(c) {
             brush.setColor(c);
         };
-        this.setContext = function (c) {
+        this.setContext = function(c) {
             brush.setContext(c);
         };
-        this.startLine = function (x, y, p) {
+        this.startLine = function(x, y, p) {
             brush.startLine(x, y);
         };
-        this.goLine = function (x, y, p, isCoalesced) {
+        this.goLine = function(x, y, p, isCoalesced) {
             brush.goLine(x, y);
         };
-        this.endLine = function () {
+        this.endLine = function() {
             brush.endLine();
         };
-        this.getBrush = function () {
+        this.getBrush = function() {
             return brush;
         };
-        this.isDrawing = function () {
+        this.isDrawing = function() {
             return brush.getIsDrawing();
         };
-        this.getElement = function () {
+        this.getElement = function() {
             return div;
         };
     };

@@ -1,13 +1,13 @@
-import {BB} from '../../../bb/bb';
+import { BB } from '../../../bb/bb';
 
-import removeLayerImg from '/src/app/img/ui/remove-layer.svg';
-import {IKlProject} from '../../kl-types';
-import {showIframeModal} from '../modals/show-iframe-modal';
-import {SaveReminder} from './save-reminder';
-import {IProjectStoreListener, ProjectStore} from '../../storage/project-store';
-import {KL} from '../../kl';
-import {LANG} from '../../../language/language';
-import {theme} from '../../../theme/theme';
+import removeLayerImg from '../../../../img/ui/remove-layer.svg';
+import { IKlProject } from '../../kl-types';
+import { showIframeModal } from '../modals/show-iframe-modal';
+import { SaveReminder } from './save-reminder';
+import { IProjectStoreListener, ProjectStore } from '../../storage/project-store';
+import { KL } from '../../kl';
+import { LANG } from '../../../language/language';
+import { theme } from '../../../theme/theme';
 
 export class BrowserStorageUi {
 
@@ -22,7 +22,7 @@ export class BrowserStorageUi {
     private timestamp: number;
     private thumbnail: HTMLImageElement | HTMLCanvasElement | undefined;
 
-    private updateAge () {
+    private updateAge() {
         if (!this.timestamp) {
             return;
         }
@@ -44,7 +44,7 @@ export class BrowserStorageUi {
         this.ageEl.textContent = ageStr;
     }
 
-    private resetButtons () {
+    private resetButtons() {
         if (this.timestamp) {
             this.storeButtonEl.textContent = LANG('file-storage-overwrite');
             this.storeButtonEl.disabled = false;
@@ -56,7 +56,7 @@ export class BrowserStorageUi {
         }
     }
 
-    private updateThumb (timestamp?: number, thumbnail?: HTMLImageElement | HTMLCanvasElement) {
+    private updateThumb(timestamp?: number, thumbnail?: HTMLImageElement | HTMLCanvasElement) {
         this.timestamp = timestamp;
         this.thumbnail = thumbnail;
         if (this.timestamp && thumbnail) {
@@ -70,7 +70,7 @@ export class BrowserStorageUi {
         this.resetButtons();
     }
 
-    private async store () {
+    private async store() {
         this.storeButtonEl.textContent = LANG('file-storage-storing');
         this.storeButtonEl.disabled = true;
         this.clearButtonEl.disabled = true;
@@ -100,7 +100,7 @@ export class BrowserStorageUi {
         }
     }
 
-    private async clear () {
+    private async clear() {
         this.storeButtonEl.disabled = true;
         this.clearButtonEl.disabled = true;
         try {
@@ -121,7 +121,7 @@ export class BrowserStorageUi {
 
     element: HTMLDivElement;
 
-    constructor (
+    constructor(
         private projectStore: ProjectStore,
         private getProject: () => IKlProject,
         private saveReminder: SaveReminder,
@@ -188,7 +188,7 @@ export class BrowserStorageUi {
                 textSize: '13px',
             },
         }) as HTMLDivElement;
-        const btnCustom = options?.isFocusable ?  {} : {
+        const btnCustom = options?.isFocusable ? {} : {
             tabIndex: -1,
         };
         this.storeButtonEl = BB.el({
@@ -256,19 +256,19 @@ export class BrowserStorageUi {
     }
 
 
-    getElement () {
+    getElement() {
         return this.element;
     }
 
-    show () {
+    show() {
         // todo
     }
 
-    hide () {
+    hide() {
         // todo
     }
 
-    destroy () {
+    destroy() {
         BB.destroyEl(this.infoEl);
         BB.destroyEl(this.storeButtonEl);
         BB.destroyEl(this.clearButtonEl);

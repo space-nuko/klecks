@@ -1,7 +1,7 @@
 
 
 // --------- history entry types ------------------------------
-import {throwIfNull} from '../../bb/base/base';
+import { throwIfNull } from '../../bb/base/base';
 
 export interface IHistoryAction {
     action: string;
@@ -53,34 +53,32 @@ export interface IHistoryBroadcast {
     bufferUpdate: IHistoryEntry;
 }
 
-let historyInstance: boolean = false;
-
 export type IHistoryListener = (p: IHistoryBroadcast | null) => void;
 
 export interface KlHistoryInterface {
-    pause (b: boolean): void;
-    addListener (l: IHistoryListener): void;
-    push (e: IHistoryEntry): void;
-    undo (): IHistoryEntry[];
-    redo (): IHistoryEntry | undefined;
-    getAll (): (IHistoryEntry | null)[];
-    canRedo (): boolean;
-    canUndo (): boolean;
-    getState (): number;
-    getActionNumber (): number;
+    pause(b: boolean): void;
+    addListener(l: IHistoryListener): void;
+    push(e: IHistoryEntry): void;
+    undo(): IHistoryEntry[];
+    redo(): IHistoryEntry | undefined;
+    getAll(): (IHistoryEntry | null)[];
+    canRedo(): boolean;
+    canUndo(): boolean;
+    getState(): number;
+    getActionNumber(): number;
 }
 
 export class DecoyKlHistory implements KlHistoryInterface {
-    pause (): void {}
-    addListener (): void {}
-    push (): void {}
-    undo (): IHistoryEntry[] { return []; }
-    redo (): (IHistoryEntry | undefined) { return undefined; }
-    getAll (): (IHistoryEntry | null)[] { return []; }
-    canRedo (): boolean { return false; }
-    canUndo (): boolean { return false; }
-    getState (): number { return 0; }
-    getActionNumber (): number { return 0; }
+    pause(): void { }
+    addListener(): void { }
+    push(): void { }
+    undo(): IHistoryEntry[] { return []; }
+    redo(): (IHistoryEntry | undefined) { return undefined; }
+    getAll(): (IHistoryEntry | null)[] { return []; }
+    canRedo(): boolean { return false; }
+    canUndo(): boolean { return false; }
+    getState(): number { return 0; }
+    getActionNumber(): number { return 0; }
 }
 
 const DO_DELETE_OLD = true;
@@ -94,8 +92,8 @@ export class KlHistory implements KlHistoryInterface {
     private readonly max: number = 20; // max number undo steps
     private maxState: number; // can't go backwards -> max state is the buffer image(klCanvas)
     private actionNumber: number; // current action the user is on. untouched document = -1 because dataArr.length is 0
-    
-    private broadcast (p: IHistoryBroadcast | null): void {
+
+    private broadcast(p: IHistoryBroadcast | null): void {
         setTimeout(() => {
             for (let i = 0; i < this.listeners.length; i++) {
                 this.listeners[i](p);
@@ -103,14 +101,10 @@ export class KlHistory implements KlHistoryInterface {
             this.state++;
         }, 1);
     }
-    
+
     // ---- public ----
-    
-    constructor () {
-        if (historyInstance) {
-            throw new Error('klHistory already instantiated');
-        }
-        historyInstance = true;
+
+    constructor() {
         this.state = 0;
         this.entries = [];
         this.listeners = [];
@@ -125,7 +119,7 @@ export class KlHistory implements KlHistoryInterface {
      * That should be a single undo step, and prevent merging from creating its own undo step.
      * Pause prevents creation of unintended undo steps.
      */
-    pause (b: boolean): void {
+    pause(b: boolean): void {
         if (b) {
             this.pauseStack++;
         } else {
@@ -133,11 +127,11 @@ export class KlHistory implements KlHistoryInterface {
         }
     }
 
-    addListener (l: IHistoryListener): void {
+    addListener(l: IHistoryListener): void {
         this.listeners.push(l);
     }
 
-    push (newEntry: IHistoryEntry): void {
+    push(newEntry: IHistoryEntry): void {
         if (this.pauseStack > 0) {
             return;
         }
@@ -171,7 +165,7 @@ export class KlHistory implements KlHistoryInterface {
             if (!item) {
                 throw new Error('this.dataArr[this.maxState] null');
             }
-            this.broadcast({bufferUpdate: item});
+            this.broadcast({ bufferUpdate: item });
         } else {
             this.broadcast(null);
         }
@@ -185,7 +179,7 @@ export class KlHistory implements KlHistoryInterface {
      * on trailing snapshot to represent the canvas one undo step back.
      * Empty array if can't undo
      */
-    undo (): IHistoryEntry[] {
+    undo(): IHistoryEntry[] {
         const result: IHistoryEntry[] = [];
         if (!this.canUndo()) {
             return result;
@@ -201,7 +195,7 @@ export class KlHistory implements KlHistoryInterface {
     /**
      * raises action number, returns the action to be redone
      */
-    redo (): (IHistoryEntry | undefined) {
+    redo(): (IHistoryEntry | undefined) {
         if (!this.canRedo()) {
             return undefined;
         }
@@ -210,29 +204,29 @@ export class KlHistory implements KlHistoryInterface {
         return throwIfNull(this.entries[this.actionNumber]);
     }
 
-    getAll (): (IHistoryEntry | null)[] {
+    getAll(): (IHistoryEntry | null)[] {
         return [...this.entries];
     }
 
-    canRedo (): boolean {
+    canRedo(): boolean {
         return this.actionNumber < this.entries.length - 1;
     }
 
-    canUndo (): boolean {
+    canUndo(): boolean {
         return this.actionNumber > this.maxState;
     }
 
-    getState (): number {
+    getState(): number {
         return this.state;
     }
 
     /**
      * actionNumber - number of undo-able actions a user has done (e.g. if drawn 5 lines total -> 5)
      */
-    getActionNumber (): number {
+    getActionNumber(): number {
         return (this.actionNumber + 1);
     }
-    
+
 }
 
 export const klHistory = new KlHistory();

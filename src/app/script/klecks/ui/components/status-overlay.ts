@@ -1,5 +1,5 @@
-import {BB} from '../../../bb/bb';
-import angleSvg from '/src/app/img/ui/angle.svg';
+import { BB } from '../../../bb/bb';
+import angleSvg from '../../../../img/ui/angle.svg';
 
 
 type TUiState = 'left' | 'right';
@@ -20,11 +20,11 @@ export class StatusOverlay {
     private timeout2: number;
     private timeout3: number;
 
-    private updateUiState () {
+    private updateUiState() {
         if (!this.el) {
             return;
         }
-        setTimeout(()=>{}, 100);
+        setTimeout(() => { }, 100);
         if (this.uiState === 'left') {
             this.el.style.left = '271px';
         } else {
@@ -32,7 +32,7 @@ export class StatusOverlay {
         }
     }
 
-    private init () {
+    private init() {
         this.el = BB.el({
             className: 'top-overlay g-root',
             onClick: BB.handleClick,
@@ -71,11 +71,11 @@ export class StatusOverlay {
 
     // --- public ---
 
-    constructor () {
+    constructor() {
         this.init();
     }
 
-    setWide (b: boolean) {
+    setWide(b: boolean) {
         this.isWide = !!b;
 
         if (!this.el) {
@@ -91,12 +91,12 @@ export class StatusOverlay {
         }
     }
 
-    setUiState (state: TUiState) {
+    setUiState(state: TUiState) {
         this.uiState = state;
         this.updateUiState();
     }
 
-    out (msg: string | {type: 'transform'; angleDeg: number; scale: number}, doPulse?: boolean) {
+    out(msg: string | { type: 'transform'; angleDeg: number; scale: number }, doPulse?: boolean) {
 
         if (msg && typeof msg === 'object') {
 

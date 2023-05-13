@@ -1,23 +1,23 @@
-import {BB} from '../../../bb/bb';
-import klecksLogoImg from '/src/app/img/klecks-logo.png';
-import newImageImg from '/src/app/img/ui/new-image.svg';
-import importImg from '/src/app/img/ui/import.svg';
-import exportImg from '/src/app/img/ui/export.svg';
-import shareImg from '/src/app/img/ui/share.svg';
-import helpImg from '/src/app/img/ui/help.svg';
-import {LANG} from '../../../language/language';
-import {PointerListener} from '../../../bb/input/pointer-listener';
+import { BB } from '../../../bb/bb';
+import klecksLogoImg from '../../../../img/klecks-logo.png';
+import newImageImg from '../../../../img/ui/new-image.svg';
+import importImg from '../../../../img/ui/import.svg';
+import exportImg from '../../../../img/ui/export.svg';
+import shareImg from '../../../../img/ui/share.svg';
+import helpImg from '../../../../img/ui/help.svg';
+import { LANG } from '../../../language/language';
+import { PointerListener } from '../../../bb/input/pointer-listener';
 
 
 /**
  * Topmost row of buttons in toolspace (with the app logo)
  */
 export class ToolspaceTopRow {
-    
+
     private readonly rootEl: HTMLElement;
-    
+
     // ---- public ----
-    constructor (
+    constructor(
         p: {
             logoImg: string;
             onLogo: () => void;
@@ -36,7 +36,7 @@ export class ToolspaceTopRow {
             },
         });
 
-        function createButton (
+        function createButton(
             p: {
                 onClick: () => void;
                 title: string;
@@ -73,7 +73,7 @@ export class ToolspaceTopRow {
             el.append(im);
             const pointerListener = new BB.PointerListener({ // because :hover causes problems w touch
                 target: el,
-                onEnterLeave: function (isOver) {
+                onEnterLeave: function(isOver) {
                     el.classList.toggle('toolspace-row-button-hover', isOver);
                 },
             });
@@ -143,8 +143,8 @@ export class ToolspaceTopRow {
             helpButton.el,
         ]);
     }
-    
-    getElement (): HTMLElement {
+
+    getElement(): HTMLElement {
         return this.rootEl;
     }
 }

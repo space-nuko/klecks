@@ -1,23 +1,23 @@
-import {BB} from '../../../bb/bb';
-import {renderText} from '../../image-operations/render-text';
-import {ColorOptions} from '../components/color-options';
-import {Select} from '../components/select';
-import {ImageRadioList} from '../components/image-radio-list';
-import {ImageToggle} from '../components/image-toggle';
-import {KlSlider} from '../components/kl-slider';
-import {showModal} from './base/showModal';
-import alignLeftImg from '/src/app/img/ui/align-left.svg';
-import alignCenterImg from '/src/app/img/ui/align-center.svg';
-import alignRightImg from '/src/app/img/ui/align-right.svg';
-import typoItalicImg from '/src/app/img/ui/typo-italic.svg';
-import typoBoldImg from '/src/app/img/ui/typo-bold.svg';
-import toolZoomInImg from '/src/app/img/ui/tool-zoom-in.svg';
-import toolZoomOutImg from '/src/app/img/ui/tool-zoom-out.svg';
-import {IRGB} from '../../kl-types';
-import {KlCanvas} from '../../canvas/kl-canvas';
-import {LANG} from '../../../language/language';
-import { throwIfNull} from '../../../bb/base/base';
-import {theme} from '../../../theme/theme';
+import { BB } from '../../../bb/bb';
+import { renderText } from '../../image-operations/render-text';
+import { ColorOptions } from '../components/color-options';
+import { Select } from '../components/select';
+import { ImageRadioList } from '../components/image-radio-list';
+import { ImageToggle } from '../components/image-toggle';
+import { KlSlider } from '../components/kl-slider';
+import { showModal } from './base/showModal';
+import alignLeftImg from '../../../../img/ui/align-left.svg';
+import alignCenterImg from '../../../../img/ui/align-center.svg';
+import alignRightImg from '../../../../img/ui/align-right.svg';
+import typoItalicImg from '../../../../img/ui/typo-italic.svg';
+import typoBoldImg from '../../../../img/ui/typo-bold.svg';
+import toolZoomInImg from '../../../../img/ui/tool-zoom-in.svg';
+import toolZoomOutImg from '../../../../img/ui/tool-zoom-out.svg';
+import { IRGB } from '../../kl-types';
+import { KlCanvas } from '../../canvas/kl-canvas';
+import { LANG } from '../../../language/language';
+import { throwIfNull } from '../../../bb/base/base';
+import { theme } from '../../../theme/theme';
 
 
 type TTextFormat = 'left' | 'center' | 'right';
@@ -39,7 +39,7 @@ export type TTextToolResult = {
 /**
  * Text Tool dialog
  */
-export function textToolDialog (
+export function textToolDialog(
     p: {
         klCanvas: KlCanvas;
         layerIndex: number;
@@ -114,13 +114,13 @@ export function textToolDialog (
         ctx.fillRect(0, 0, 1, 1);
     }
 
-    function updateCheckerboard (): void {
+    function updateCheckerboard(): void {
         checkerPattern = throwIfNull(previewCtx.createPattern(BB.createCheckerCanvas(8, theme.isDark()), 'repeat'));
         updatePreview();
     }
     theme.addIsDarkListener(updateCheckerboard);
 
-    function updatePreview (): void {
+    function updatePreview(): void {
 
         // try to draw very much like klCanvasWorkspace
 
@@ -166,7 +166,7 @@ export function textToolDialog (
             targetCtx.imageSmoothingEnabled = false;
         } else {
             targetCtx.imageSmoothingEnabled = true;
-            targetCtx.imageSmoothingQuality  = scale >= 1 ? 'low' : 'medium';
+            targetCtx.imageSmoothingQuality = scale >= 1 ? 'low' : 'medium';
         }
 
         targetCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
@@ -213,7 +213,7 @@ export function textToolDialog (
                 layersCtx.imageSmoothingEnabled = false;
             } else {
                 layersCtx.imageSmoothingEnabled = true;
-                layersCtx.imageSmoothingQuality  = scale >= 1 ? 'low' : 'medium';
+                layersCtx.imageSmoothingQuality = scale >= 1 ? 'low' : 'medium';
             }
 
             // layers below
@@ -284,7 +284,7 @@ export function textToolDialog (
     /**
      * Move text by x y
      */
-    function move (x: number, y: number): void {
+    function move(x: number, y: number): void {
         const rotated = BB.rotate(x, y, -p.angleRad / Math.PI * 180);
         p.x += rotated.x / scale;
         p.y += rotated.y / scale;
@@ -349,8 +349,8 @@ export function textToolDialog (
 
     // color
     const colorOptionsArr = [
-        {r: 0, g: 0, b: 0, a: 1},
-        {r: 255, g: 255, b: 255, a: 1},
+        { r: 0, g: 0, b: 0, a: 1 },
+        { r: 255, g: 255, b: 255, a: 1 },
     ];
     colorOptionsArr.unshift({
         r: p.secondaryColor.r,
@@ -380,14 +380,14 @@ export function textToolDialog (
 
     let zoomFac = 0;
 
-    function changeZoomFac (d: number): void {
+    function changeZoomFac(d: number): void {
         zoomFac = Math.min(2, Math.max(-2, zoomFac + d));
         updatePreview();
         zoomInBtn.disabled = !canZoom(1);
         zoomOutBtn.disabled = !canZoom(-1);
     }
 
-    function canZoom (d: number): boolean {
+    function canZoom(d: number): boolean {
         return zoomFac !== Math.min(2, Math.max(-2, zoomFac + d));
     }
 
@@ -584,7 +584,7 @@ export function textToolDialog (
     });
 
     // prevent mobile keyboards scrolling page
-    function onScroll (): void {
+    function onScroll(): void {
         window.scrollTo(0, 0);
     }
     window.addEventListener('scroll', onScroll);

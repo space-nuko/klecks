@@ -1,7 +1,7 @@
-import {BB} from '../../../bb/bb';
-import collapseImg from '/src/app/img/ui/ui-collapse.svg';
-import {LANG} from '../../../language/language';
-import {TUiLayout} from '../../kl-types';
+import { BB } from '../../../bb/bb';
+import collapseImg from '../../../../img/ui/ui-collapse.svg';
+import { LANG } from '../../../language/language';
+import { TUiLayout } from '../../kl-types';
 
 /**
  * button that allows to collapse toolspace (for mobile)
@@ -14,7 +14,7 @@ export class ToolspaceCollapser {
     private stateIsOpen: boolean;
 
 
-    private update (): void {
+    private update(): void {
         if (this.directionStr === 'left') {
             this.icon.style.transform = this.stateIsOpen ? 'rotate(180deg)' : '';
         } else {
@@ -23,7 +23,7 @@ export class ToolspaceCollapser {
     }
 
     // ---- public ----
-    constructor (
+    constructor(
         p: {
             onChange: () => void;
         }
@@ -75,16 +75,16 @@ export class ToolspaceCollapser {
 
     // ---- interface ----
 
-    isOpen (): boolean {
+    isOpen(): boolean {
         return this.stateIsOpen;
     }
 
-    setDirection (dirStr: TUiLayout): void {
+    setDirection(dirStr: TUiLayout): void {
         this.directionStr = dirStr;
         this.update();
     }
 
-    getElement (): HTMLElement {
+    getElement(): HTMLElement {
         return this.rootEl;
     }
 

@@ -1,6 +1,6 @@
-import {KlHistoryInterface} from './history/kl-history';
-import {KlCanvas} from './canvas/kl-canvas';
-import {TTranslationCode} from '../../languages/languages';
+import { KlHistoryInterface } from './history/kl-history';
+import { KlCanvas } from './canvas/kl-canvas';
+import { TTranslationCode } from '../../languages/languages';
 
 export interface IFilterApply<T = unknown> {
     context: CanvasRenderingContext2D; // context of selected layer
@@ -73,7 +73,7 @@ export type TMixMode = (
     'saturation' |
     'color' |
     'luminosity'
-    );
+);
 
 export type IKlBasicLayer = {
     opacity: number; // 0 - 1

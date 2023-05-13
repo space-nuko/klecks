@@ -1,21 +1,21 @@
-import {BB} from '../../../bb/bb';
-import {LANG, languageStrings, LS_LANGUAGE_KEY} from '../../../language/language';
-import {KL} from '../../kl';
-import {languages} from '../../../../languages/languages';
-import {DynamicModal} from '../modals/base/dynamic-modal';
-import bitbofLogoImg from '/src/app/img/bitbof-logo.svg';
-import klecksLogoImg from '/src/app/img/klecks-logo.png';
-import uiSwapImg from '/src/app/img/ui/ui-swap-lr.svg';
-import {LocalStorage} from '../../../bb/base/local-storage';
-import {theme, TTheme} from '../../../theme/theme';
-import {addIsDarkListener} from '../../../bb/base/base';
+import { BB } from '../../../bb/bb';
+import { LANG, languageStrings, LS_LANGUAGE_KEY } from '../../../language/language';
+import { KL } from '../../kl';
+import { languages } from '../../../../languages/languages';
+import { DynamicModal } from '../modals/base/dynamic-modal';
+import bitbofLogoImg from '../../../../img/bitbof-logo.svg';
+import klecksLogoImg from '../../../../img/klecks-logo.png';
+import uiSwapImg from '../../../../img/ui/ui-swap-lr.svg';
+import { LocalStorage } from '../../../bb/base/local-storage';
+import { theme, TTheme } from '../../../theme/theme';
+import { addIsDarkListener } from '../../../bb/base/base';
 
 export class SettingsTab {
 
     private el: HTMLElement;
 
     // --- public ---
-    constructor (
+    constructor(
         onLeftRight: () => void,
         customAbout?: HTMLElement,
     ) {
@@ -82,7 +82,7 @@ export class SettingsTab {
 
 
         // ---- theme ----
-        function themeToLabel (theme: TTheme): string {
+        function themeToLabel(theme: TTheme): string {
             return theme === 'dark' ? '⬛ ' + LANG('theme-dark') : '⬜ ' + LANG('theme-light');
         }
         const themeSelect = new KL.Select({
@@ -138,9 +138,9 @@ export class SettingsTab {
 
 
         // ---- about ----
-        this.el.append(BB.el({className: 'grid-hr', css: {margin: '10px 0'}}));
+        this.el.append(BB.el({ className: 'grid-hr', css: { margin: '10px 0' } }));
 
-        function makeLicenses () {
+        function makeLicenses() {
             return BB.el({
                 tagName: 'a',
                 content: LANG('licenses'),
@@ -176,8 +176,8 @@ export class SettingsTab {
                 const minimalAbout = BB.el({
                     parent: customAbout,
                     css: {
-                       textAlign: 'center',
-                   },
+                        textAlign: 'center',
+                    },
                 });
                 minimalAbout.append(
                     BB.el({
@@ -233,7 +233,7 @@ export class SettingsTab {
 
     }
 
-    getElement (): HTMLElement {
+    getElement(): HTMLElement {
         return this.el;
     }
 

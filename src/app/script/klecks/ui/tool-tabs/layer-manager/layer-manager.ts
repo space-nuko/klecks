@@ -10,11 +10,11 @@ import {PointerListener} from '../../../../bb/input/pointer-listener';
 import {IPointerEvent} from '../../../../bb/input/event.types';
 import {renameLayerDialog} from './rename-layer-dialog';
 import {mergeLayerDialog} from './merge-layer-dialog';
-import addLayerImg from '/src/app/img/ui/add-layer.svg';
-import duplicateLayerImg from '/src/app/img/ui/duplicate-layer.svg';
-import mergeLayerImg from '/src/app/img/ui/merge-layers.svg';
-import removeLayerImg from '/src/app/img/ui/remove-layer.svg';
-import renameLayerImg from '/src/app/img/ui/rename-layer.svg';
+import addLayerImg from '../../../../../img/ui/add-layer.svg';
+import duplicateLayerImg from '../../../../../img/ui/duplicate-layer.svg';
+import mergeLayerImg from '../../../../../img/ui/merge-layers.svg';
+import removeLayerImg from '../../../../../img/ui/remove-layer.svg';
+import renameLayerImg from '../../../../../img/ui/rename-layer.svg';
 import {theme} from '../../../../theme/theme';
 
 type TLayerEl = HTMLElement & {

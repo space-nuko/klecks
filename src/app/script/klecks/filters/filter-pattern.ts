@@ -1,13 +1,13 @@
-import {BB} from '../../bb/bb';
-import {IFilterApply, IFilterGetDialogParam, IFilterGetDialogResult, IKlBasicLayer} from '../kl-types';
-import {input} from '../ui/components/input';
-import {KlSlider} from '../ui/components/kl-slider';
-import {LANG} from '../../language/language';
-import {eventResMs} from './filters-consts';
-import {KlCanvasPreview} from '../canvas-ui/canvas-preview';
-import {TwoTabs} from '../ui/components/two-tabs';
-import {IVector2D} from '../../bb/bb-types';
-import {TFilterHistoryEntry} from './filters';
+import { BB } from '../../bb/bb';
+import { IFilterApply, IFilterGetDialogParam, IFilterGetDialogResult, IKlBasicLayer } from '../kl-types';
+import { input } from '../ui/components/input';
+import { KlSlider } from '../ui/components/kl-slider';
+import { LANG } from '../../language/language';
+import { eventResMs } from './filters-consts';
+import { KlCanvasPreview } from '../canvas-ui/canvas-preview';
+import { TwoTabs } from '../ui/components/two-tabs';
+import { IVector2D } from '../../bb/bb-types';
+import { TFilterHistoryEntry } from './filters';
 
 
 export type TFilterPatternInput = {
@@ -31,7 +31,7 @@ export type TFilterPatternHistoryEntry = TFilterHistoryEntry<
  * @param context
  * @param settings
  */
-function drawPattern (context: CanvasRenderingContext2D, settings: TFilterPatternInput): void {
+function drawPattern(context: CanvasRenderingContext2D, settings: TFilterPatternInput): void {
 
     // keep bounds in center via offset
     // because blending done towards bottom right
@@ -139,7 +139,7 @@ function drawPattern (context: CanvasRenderingContext2D, settings: TFilterPatter
 
 export const filterPattern = {
 
-    getDialog (params: IFilterGetDialogParam) {
+    getDialog(params: IFilterGetDialogParam) {
 
         const isSmall = window.innerWidth < 550;
         const maxSize = 1024;
@@ -185,8 +185,8 @@ export const filterPattern = {
             type: 'number',
             min: 0,
             max: width,
-            css: {width: '100%'},
-            callback: function (v) {
+            css: { width: '100%' },
+            callback: function(v) {
                 settings.x = Number(v);
                 updatePreview();
             },
@@ -196,8 +196,8 @@ export const filterPattern = {
             type: 'number',
             min: 0,
             max: height,
-            css: {width: '100%'},
-            callback: function (v) {
+            css: { width: '100%' },
+            callback: function(v) {
                 settings.y = Number(v);
                 updatePreview();
             },
@@ -207,8 +207,8 @@ export const filterPattern = {
             type: 'number',
             min: 1,
             max: Math.min(maxSize, width),
-            css: {width: '100%'},
-            callback: function (v) {
+            css: { width: '100%' },
+            callback: function(v) {
                 settings.width = Number(v);
                 updatePreview();
             },
@@ -218,8 +218,8 @@ export const filterPattern = {
             type: 'number',
             min: 1,
             max: Math.min(maxSize, height),
-            css: {width: '100%'},
-            callback: function (v) {
+            css: { width: '100%' },
+            callback: function(v) {
                 settings.height = Number(v);
                 updatePreview();
             },
@@ -231,48 +231,48 @@ export const filterPattern = {
         };
         rootEl.append(
             BB.el({
-               content: [
+                content: [
 
-                   BB.el({
-                       tagName: 'label',
-                       content: [
-                           'X:',
-                           xInput,
-                       ],
-                       css: inputStyle,
-                   }),
+                    BB.el({
+                        tagName: 'label',
+                        content: [
+                            'X:',
+                            xInput,
+                        ],
+                        css: inputStyle,
+                    }),
 
-                   BB.el({
-                       tagName: 'label',
-                       content: [
-                           'Y:',
-                           yInput,
-                       ],
-                       css: inputStyle,
-                   }),
+                    BB.el({
+                        tagName: 'label',
+                        content: [
+                            'Y:',
+                            yInput,
+                        ],
+                        css: inputStyle,
+                    }),
 
-                   BB.el({
-                       tagName: 'label',
-                       content: [
-                           LANG('width') + ':',
-                           widthInput,
-                       ],
-                       css: inputStyle,
-                   }),
+                    BB.el({
+                        tagName: 'label',
+                        content: [
+                            LANG('width') + ':',
+                            widthInput,
+                        ],
+                        css: inputStyle,
+                    }),
 
-                   BB.el({
-                       tagName: 'label',
-                       content: [
-                           LANG('height') + ':',
-                           heightInput,
-                       ],
-                       css: inputStyle,
-                   }),
-               ],
-               css: {
-                   display: 'flex',
-                   marginLeft: '-5px',
-               },
+                    BB.el({
+                        tagName: 'label',
+                        content: [
+                            LANG('height') + ':',
+                            heightInput,
+                        ],
+                        css: inputStyle,
+                    }),
+                ],
+                css: {
+                    display: 'flex',
+                    marginLeft: '-5px',
+                },
             }),
         );
 
@@ -285,7 +285,7 @@ export const filterPattern = {
             max: 1,
             value: settings.blend,
             eventResMs: eventResMs,
-            onChange: function (val) {
+            onChange: function(val) {
                 settings.blend = val;
                 updatePreview();
             },
@@ -397,7 +397,7 @@ export const filterPattern = {
             state: null,
         };
 
-        function syncInputs (): void {
+        function syncInputs(): void {
             xInput.value = '' + settings.x;
             yInput.value = '' + settings.y;
             widthInput.value = '' + settings.width;
@@ -407,7 +407,7 @@ export const filterPattern = {
         const keyListener = new BB.KeyListener({
         });
 
-        previewWrapper.oncontextmenu = function () {
+        previewWrapper.oncontextmenu = function() {
             return false;
         };
         previewInnerWrapper.style.touchAction = 'none';
@@ -423,14 +423,14 @@ export const filterPattern = {
                             const y = event.relY / previewFactor;
 
                             if (BB.isInsideRect(
-                                {x, y},
-                                {x: settings.x, y: settings.y, width: settings.width, height: settings.height},
+                                { x, y },
+                                { x: settings.x, y: settings.y, width: settings.width, height: settings.height },
                             )) {
                                 inputs.state = 'move';
                             } else {
                                 inputs.state = 'select';
                             }
-                            inputs.start = {x, y};
+                            inputs.start = { x, y };
                         }
                     } else if (event.type === 'pointermove') {
 
@@ -438,7 +438,7 @@ export const filterPattern = {
                         const y = event.relY / previewFactor;
 
                         if (inputs.state === 'select') {
-                            inputs.end = {x, y};
+                            inputs.end = { x, y };
 
                             const x1 = Math.max(0, Math.min(inputs.start.x, inputs.end.x));
                             const y1 = Math.max(0, Math.min(inputs.start.y, inputs.end.y));
@@ -481,12 +481,12 @@ export const filterPattern = {
                         if (!inputs.state) {
                             inputs.state = 'move';
                             inputs.oldSettings = BB.copyObj(settings);
-                            inputs.start = {x: event.relX / previewFactor, y: event.relY / previewFactor};
+                            inputs.start = { x: event.relX / previewFactor, y: event.relY / previewFactor };
                             inputs.end = null;
                         }
                     } else if (event.type === 'pointermove') {
                         if (inputs.state) {
-                            inputs.end = {x: event.relX / previewFactor, y: event.relY / previewFactor};
+                            inputs.end = { x: event.relX / previewFactor, y: event.relY / previewFactor };
 
                             settings.offsetX = Math.round(inputs.end.x - inputs.start.x) + inputs.oldSettings.offsetX;
                             settings.offsetY = Math.round(inputs.end.y - inputs.start.y) + inputs.oldSettings.offsetY;
@@ -511,7 +511,7 @@ export const filterPattern = {
         const fullSizeCanvas = BB.canvas(width, height);
         const fullSizeCtx = BB.ctx(fullSizeCanvas);
 
-        function sharpStrokeRect (
+        function sharpStrokeRect(
             context: CanvasRenderingContext2D,
             x: number,
             y: number,
@@ -525,7 +525,7 @@ export const filterPattern = {
             context.strokeRect(drawX, drawY, drawWidth, drawHeight);
         }
 
-        function updatePreview (doForce?: boolean) {
+        function updatePreview(doForce?: boolean) {
             if (!doForce && lastDrawnSettings && JSON.stringify(lastDrawnSettings) === JSON.stringify(settings)) {
                 return;
             }
@@ -605,7 +605,7 @@ export const filterPattern = {
         return result;
     },
 
-    apply (params: IFilterApply<TFilterPatternInput>): boolean {
+    apply(params: IFilterApply<TFilterPatternInput>): boolean {
         const klCanvas = params.klCanvas;
         const ctx = params.context;
         const history = params.history;

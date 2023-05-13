@@ -1,8 +1,8 @@
-import {BB} from '../bb/bb';
-import uiSwapImg from '/src/app/img/ui/ui-swap-lr.svg';
-import helpImg from '/src/app/img/ui/help.svg';
-import {LANG} from '../language/language';
-import {PointerListener} from '../bb/input/pointer-listener';
+import { BB } from '../bb/bb';
+import uiSwapImg from '../../img/ui/ui-swap-lr.svg';
+import helpImg from '../../img/ui/help.svg';
+import { LANG } from '../language/language';
+import { PointerListener } from '../bb/input/pointer-listener';
 
 /**
  * Topmost row of buttons in toolspace. (embed)
@@ -16,7 +16,7 @@ export class EmbedToolspaceTopRow {
 
     // ---- public ----
 
-    constructor (p: {onSubmit: () => void; onLeftRight: () => void; onHelp: () => void}) {
+    constructor(p: { onSubmit: () => void; onLeftRight: () => void; onHelp: () => void }) {
         this.rootEl = BB.el({
             className: 'kl-toolspace-row',
             css: {
@@ -25,7 +25,7 @@ export class EmbedToolspaceTopRow {
             },
         });
 
-        function createButton (p): {
+        function createButton(p): {
             el: HTMLElement;
             pointerListener: PointerListener;
         } {
@@ -57,7 +57,7 @@ export class EmbedToolspaceTopRow {
             }
             const pointerListener = new BB.PointerListener({ // because :hover causes problems w touch
                 target: el,
-                onEnterLeave: function (isOver) {
+                onEnterLeave: function(isOver) {
                     el.classList.toggle('toolspace-row-button-hover', isOver);
                 },
             });
@@ -103,7 +103,7 @@ export class EmbedToolspaceTopRow {
         this.rootEl.append(submitButton.el, leftRightButton.el, helpButton.el);
     }
 
-    getElement (): HTMLElement {
+    getElement(): HTMLElement {
         return this.rootEl;
     }
 }

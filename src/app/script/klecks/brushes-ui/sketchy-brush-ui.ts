@@ -1,13 +1,13 @@
-import {brushes} from '../brushes/brushes';
-import {eventResMs} from './brushes-consts';
-import {klHistory} from '../history/kl-history';
-import {KlSlider} from '../ui/components/kl-slider';
-import brushIconImg from '/src/app/img/ui/brush-sketchy.png';
-import {IBrushUi} from '../kl-types';
-import {LANG, languageStrings} from '../../language/language';
-import {BB} from '../../bb/bb';
+import { brushes } from '../brushes/brushes';
+import { eventResMs } from './brushes-consts';
+import { klHistory } from '../history/kl-history';
+import { KlSlider } from '../ui/components/kl-slider';
+import brushIconImg from '../../../img/ui/brush-sketchy.png';
+import { IBrushUi } from '../kl-types';
+import { LANG, languageStrings } from '../../language/language';
+import { BB } from '../../bb/bb';
 
-export const sketchyBrushUi = (function () {
+export const sketchyBrushUi = (function() {
     const brushInterface: IBrushUi = {
         image: brushIconImg,
         tooltip: LANG('brush-sketchy'),
@@ -26,7 +26,7 @@ export const sketchyBrushUi = (function () {
         brushInterface.tooltip = LANG('brush-sketchy');
     });
 
-    brushInterface.Ui = function (p) {
+    brushInterface.Ui = function(p) {
         const div = document.createElement('div'); // the gui
         const brush = new brushes.SketchyBrush();
         brush.setHistory(klHistory);
@@ -34,11 +34,11 @@ export const sketchyBrushUi = (function () {
         let sizeSlider;
         let opacitySlider;
 
-        function setSize (size) {
+        function setSize(size) {
             brush.setSize(size);
         }
 
-        function init () {
+        function init() {
             sizeSlider = new KlSlider({
                 label: LANG('brush-size'),
                 width: 250,
@@ -49,7 +49,7 @@ export const sketchyBrushUi = (function () {
                 eventResMs: eventResMs,
                 toDisplayValue: (val) => val * 2,
                 toValue: (displayValue) => displayValue / 2,
-                onChange: function (val) {
+                onChange: function(val) {
                     brush.setSize(val);
                     p.onSizeChange(val);
                 },
@@ -87,7 +87,7 @@ export const sketchyBrushUi = (function () {
                 eventResMs: eventResMs,
                 toDisplayValue: (val) => val * 100,
                 toValue: (displayValue) => displayValue / 100,
-                onChange: function (val) {
+                onChange: function(val) {
                     brush.setBlending(val);
                 },
             });
@@ -99,7 +99,7 @@ export const sketchyBrushUi = (function () {
                 max: 20,
                 value: brush.getScale(),
                 eventResMs: eventResMs,
-                onChange: function (val) {
+                onChange: function(val) {
                     brush.setScale(val);
                 },
             });
@@ -116,58 +116,58 @@ export const sketchyBrushUi = (function () {
 
         init();
 
-        this.increaseSize = function (f) {
+        this.increaseSize = function(f) {
             if (!brush.isDrawing()) {
                 sizeSlider.changeSliderValue(f);
             }
         };
-        this.decreaseSize = function (f) {
+        this.decreaseSize = function(f) {
             if (!brush.isDrawing()) {
                 sizeSlider.changeSliderValue(-f);
             }
         };
-        this.getSize = function () {
+        this.getSize = function() {
             return brush.getSize();
         };
-        this.setSize = function (size) {
+        this.setSize = function(size) {
             setSize(size);
             sizeSlider.setValue(size);
         };
-        this.getOpacity = function () {
+        this.getOpacity = function() {
             return brush.getOpacity();
         };
-        this.setOpacity = function (opacity) {
+        this.setOpacity = function(opacity) {
             brush.setOpacity(opacity);
             opacitySlider.setValue(opacity);
         };
-        this.setColor = function (c) {
+        this.setColor = function(c) {
             brush.setColor(c);
         };
-        this.setContext = function (c) {
+        this.setContext = function(c) {
             brush.setContext(c);
         };
-        this.startLine = function (x, y, pressure) {
+        this.startLine = function(x, y, pressure) {
             brush.startLine(x, y, pressure);
         };
-        this.goLine = function (x, y, pressure) {
+        this.goLine = function(x, y, pressure) {
             brush.goLine(x, y, pressure, null);
         };
-        this.endLine = function () {
+        this.endLine = function() {
             brush.endLine();
         };
-        this.getSeed = function () {
+        this.getSeed = function() {
             return parseInt(brush.getSeed());
         };
-        this.setSeed = function (s) {
+        this.setSeed = function(s) {
             brush.setSeed(parseInt(s));
         };
-        this.getBrush = function () {
+        this.getBrush = function() {
             return brush;
         };
-        this.isDrawing = function () {
+        this.isDrawing = function() {
             return brush.isDrawing();
         };
-        this.getElement = function () {
+        this.getElement = function() {
             return div;
         };
     };

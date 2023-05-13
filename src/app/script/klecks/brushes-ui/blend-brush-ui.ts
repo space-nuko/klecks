@@ -1,15 +1,15 @@
-import {BB} from '../../bb/bb';
-import {createPenPressureToggle} from '../ui/components/create-pen-pressure-toggle';
-import {eventResMs} from './brushes-consts';
-import {Checkbox} from '../ui/components/checkbox';
-import {brushes} from '../brushes/brushes';
-import {klHistory} from '../history/kl-history';
-import {KlSlider} from '../ui/components/kl-slider';
-import brushIconImg from '/src/app/img/ui/brush-blend.svg';
-import {IBrushUi} from '../kl-types';
-import {LANG, languageStrings} from '../../language/language';
+import { BB } from '../../bb/bb';
+import { createPenPressureToggle } from '../ui/components/create-pen-pressure-toggle';
+import { eventResMs } from './brushes-consts';
+import { Checkbox } from '../ui/components/checkbox';
+import { brushes } from '../brushes/brushes';
+import { klHistory } from '../history/kl-history';
+import { KlSlider } from '../ui/components/kl-slider';
+import brushIconImg from '../../../img/ui/brush-blend.svg';
+import { IBrushUi } from '../kl-types';
+import { LANG, languageStrings } from '../../language/language';
 
-export const blendBrushUi = (function () {
+export const blendBrushUi = (function() {
     const brushInterface: IBrushUi = {
         image: brushIconImg,
         tooltip: LANG('brush-blend'),
@@ -29,7 +29,7 @@ export const blendBrushUi = (function () {
         brushInterface.tooltip = LANG('brush-blend');
     });
 
-    brushInterface.Ui = function (p) {
+    brushInterface.Ui = function(p) {
         const div = document.createElement('div'); // the gui
         const brush = new brushes.BlendBrush();
         brush.setHistory(klHistory);
@@ -38,11 +38,11 @@ export const blendBrushUi = (function () {
         let sizeSlider;
         let opacitySlider;
 
-        function setSize (size) {
+        function setSize(size) {
             brush.setSize(size);
         }
 
-        function init () {
+        function init() {
             sizeSlider = new KlSlider({
                 label: LANG('brush-size'),
                 width: 225,
@@ -85,23 +85,23 @@ export const blendBrushUi = (function () {
                 eventResMs: eventResMs,
                 toDisplayValue: (val) => val * 100,
                 toValue: (displayValue) => displayValue / 100,
-                onChange: function (val) {
+                onChange: function(val) {
                     brush.setBlending(val);
                 },
             });
             blendingSlider.getElement().style.marginTop = '10px';
 
-            const pressureSizeToggle = createPenPressureToggle(true, function (b) {
+            const pressureSizeToggle = createPenPressureToggle(true, function(b) {
                 brush.setSizePressure(b);
             });
-            const pressureOpacityToggle = createPenPressureToggle(false, function (b) {
+            const pressureOpacityToggle = createPenPressureToggle(false, function(b) {
                 brush.setOpacityPressure(b);
             });
 
             const lockAlphaToggle = new Checkbox({
                 init: brush.getLockAlpha(),
                 label: LANG('lock-alpha'),
-                callback: function (b) {
+                callback: function(b) {
                     brush.setLockAlpha(b);
                 },
                 doHighlight: true,
@@ -144,54 +144,54 @@ export const blendBrushUi = (function () {
 
         init();
 
-        this.increaseSize = function (f) {
+        this.increaseSize = function(f) {
             if (!brush.getIsDrawing()) {
                 sizeSlider.changeSliderValue(f);
             }
         };
-        this.decreaseSize = function (f) {
+        this.decreaseSize = function(f) {
             if (!brush.getIsDrawing()) {
                 sizeSlider.changeSliderValue(-f);
             }
         };
 
-        this.getSize = function () {
+        this.getSize = function() {
             return brush.getSize();
         };
-        this.setSize = function (size) {
+        this.setSize = function(size) {
             setSize(size);
             sizeSlider.setValue(size);
         };
-        this.getOpacity = function () {
+        this.getOpacity = function() {
             return brush.getOpacity();
         };
-        this.setOpacity = function (opacity) {
+        this.setOpacity = function(opacity) {
             brush.setOpacity(opacity);
             opacitySlider.setValue(opacity);
         };
 
-        this.setColor = function (c) {
+        this.setColor = function(c) {
             brush.setColor(c);
         };
-        this.setContext = function (c) {
+        this.setContext = function(c) {
             brush.setContext(c);
         };
-        this.startLine = function (x, y, p) {
+        this.startLine = function(x, y, p) {
             brush.startLine(x, y, p);
         };
-        this.goLine = function (x, y, p, isCoalesced) {
+        this.goLine = function(x, y, p, isCoalesced) {
             brush.goLine(x, y, p, isCoalesced);
         };
-        this.endLine = function () {
+        this.endLine = function() {
             brush.endLine();
         };
-        this.getBrush = function () {
+        this.getBrush = function() {
             return brush;
         };
-        this.isDrawing = function () {
+        this.isDrawing = function() {
             return brush.getIsDrawing();
         };
-        this.getElement = function () {
+        this.getElement = function() {
             return div;
         };
     };

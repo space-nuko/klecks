@@ -1,6 +1,6 @@
-import {BB} from '../../../bb/bb';
-import invertedBorderImg from '/src/app/img/ui/inverted-border.svg';
-import {IKeyStringOptional} from '../../../bb/bb-types';
+import { BB } from '../../../bb/bb';
+import invertedBorderImg from '../../../../img/ui/inverted-border.svg';
+import { IKeyStringOptional } from '../../../bb/bb-types';
 
 
 // type all functions
@@ -37,17 +37,17 @@ export class TabRow {
     private activeTab: TTab;
     private readonly roundRight: HTMLElement;
     private readonly roundLeft: HTMLElement;
-    
-    
+
+
     // update
-    update (): void {
+    update(): void {
         for (let i = 0; i < this.tabArr.length; i++) {
             this.tabArr[i].update(this.activeTab);
         }
     }
-    
+
     // ---- public ----
-    constructor (
+    constructor(
         p: {
             initialId: string; // e.g. 'draw'
             useAccent?: boolean;
@@ -175,11 +175,11 @@ export class TabRow {
 
     // ---- interface ----
 
-    getElement (): HTMLElement {
+    getElement(): HTMLElement {
         return this.rootEl;
     }
 
-    open (tabId: string): void {
+    open(tabId: string): void {
         for (let i = 0; i < this.tabArr.length; i++) {
             if (this.tabArr[i].id === tabId) {
                 if (this.activeTab === this.tabArr[i]) { // already open
@@ -196,11 +196,11 @@ export class TabRow {
         throw 'TabRow.open - invalid tabId';
     }
 
-    getOpenedTabId (): string {
+    getOpenedTabId(): string {
         return '' + this.activeTab.id;
     }
 
-    setIsVisible (tabId: string, isVisible: string): void {
+    setIsVisible(tabId: string, isVisible: string): void {
         for (let i = 0; i < this.tabArr.length; i++) {
             if (this.tabArr[i].id === tabId) {
                 this.tabArr[i].isVisible = !!isVisible;
@@ -211,5 +211,3 @@ export class TabRow {
         throw 'TabRow.setIsVisible - invalid tabId';
     }
 }
-
-

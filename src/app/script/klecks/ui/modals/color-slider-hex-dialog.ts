@@ -1,10 +1,10 @@
-import {BB} from '../../../bb/bb';
-import {input} from '../components/input';
-import {showModal} from './base/showModal';
-import {LANG} from '../../../language/language';
-import copyImg from '/src/app/img/ui/copy.svg';
-import {IRGB} from '../../kl-types';
-import {RGB} from '../../../bb/color/color';
+import { BB } from '../../../bb/bb';
+import { input } from '../components/input';
+import { showModal } from './base/showModal';
+import { LANG } from '../../../language/language';
+import copyImg from '../../../../img/ui/copy.svg';
+import { IRGB } from '../../kl-types';
+import { RGB } from '../../../bb/color/color';
 
 
 type TInputRow = {
@@ -19,7 +19,7 @@ export class HexColorDialog {
 
 
     // ---- public ----
-    constructor (
+    constructor(
         p: {
             color: IRGB;
             onClose: (rgb: IRGB | null) => void;
@@ -60,7 +60,7 @@ export class HexColorDialog {
             css: {
                 width: '80px',
             },
-            callback: function () {
+            callback: function() {
                 let rgbObj = BB.ColorConverter.hexToRGB(hexInput.value);
                 if (rgbObj === null) {
                     rgbObj = lastValidRgb;
@@ -82,21 +82,21 @@ export class HexColorDialog {
             css: {
                 marginLeft: '10px',
             },
-            onClick: function () {
+            onClick: function() {
                 hexInput.select();
                 document.execCommand('copy');
             },
         });
         hexRowEl.append(hexLabel, hexInput, copyButton);
         div.append(hexRowEl);
-        setTimeout(function () {
+        setTimeout(function() {
             hexInput.focus();
             hexInput.select();
         }, 0);
 
 
         // --- R G B ---
-        function createRgbInputRow (labelStr: string, attributeStr: 'r' | 'g' | 'b'): TInputRow {
+        function createRgbInputRow(labelStr: string, attributeStr: 'r' | 'g' | 'b'): TInputRow {
 
             const rowEl = BB.el({
                 css: {
@@ -120,7 +120,7 @@ export class HexColorDialog {
                 css: {
                     width: '80px',
                 },
-                callback: function () {
+                callback: function() {
                     if (inputEl.value === '' || parseFloat(inputEl.value) < 0 || parseFloat(inputEl.value) > 255) {
                         result.update();
                         return;
@@ -158,7 +158,7 @@ export class HexColorDialog {
             autoFocus: false,
             clickOnEnter: 'Ok',
             buttons: ['Ok', 'Cancel'],
-            callback: function (resultStr) {
+            callback: function(resultStr) {
                 BB.destroyEl(copyButton);
                 rgbArr.forEach(item => item.destroy());
                 rgbArr.splice(0, rgbArr.length);

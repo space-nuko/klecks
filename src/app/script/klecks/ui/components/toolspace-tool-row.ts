@@ -1,12 +1,12 @@
-import {BB} from '../../../bb/bb';
-import {ToolDropdown} from './tool-dropdown';
-import toolHandImg from '/src/app/img/ui/tool-hand.svg';
-import toolZoomInImg from '/src/app/img/ui/tool-zoom-in.svg';
-import toolZoomOutImg from '/src/app/img/ui/tool-zoom-out.svg';
-import toolUndoImg from '/src/app/img/ui/tool-undo.svg';
-import {LANG} from '../../../language/language';
-import {PointerListener} from '../../../bb/input/pointer-listener';
-import {TToolType} from '../../kl-types';
+import { BB } from '../../../bb/bb';
+import { ToolDropdown } from './tool-dropdown';
+import toolHandImg from '../../../../img/ui/tool-hand.svg';
+import toolZoomInImg from '../../../../img/ui/tool-zoom-in.svg';
+import toolZoomOutImg from '../../../../img/ui/tool-zoom-out.svg';
+import toolUndoImg from '../../../../img/ui/tool-undo.svg';
+import { LANG } from '../../../language/language';
+import { PointerListener } from '../../../bb/input/pointer-listener';
+import { TToolType } from '../../kl-types';
 
 
 type TBaseToolRowButton = {
@@ -47,7 +47,7 @@ export class ToolspaceToolRow {
 
     // ---- public ----
 
-    constructor (
+    constructor(
         p: {
             onActivate: (activeStr: TToolType) => void; // clicking on tool button - activating it
             onZoomIn: () => void;
@@ -56,7 +56,7 @@ export class ToolspaceToolRow {
             onRedo: () => void;
         }
     ) {
-        this.rootEl = BB.el( {
+        this.rootEl = BB.el({
             className: 'kl-toolspace-row',
             css: {
                 height: '54px',
@@ -149,7 +149,7 @@ export class ToolspaceToolRow {
             const blurOffsetX = 2;
             const blurOffsetY = 2;
 
-            const defs = BB.createSvg( { // inset shadow via svg
+            const defs = BB.createSvg({ // inset shadow via svg
                 elementType: 'defs',
                 childrenArr: [
                     {
@@ -414,11 +414,11 @@ export class ToolspaceToolRow {
 
     // ---- interface ----
 
-    getElement (): HTMLElement {
+    getElement(): HTMLElement {
         return this.rootEl;
     }
 
-    setIsSmall (b: boolean): void {
+    setIsSmall(b: boolean): void {
         BB.css(this.rootEl, {
             height: b ? '36px' : '54px',
         });
@@ -448,27 +448,27 @@ export class ToolspaceToolRow {
 
     }
 
-    setEnableZoomIn (b: boolean): void {
+    setEnableZoomIn(b: boolean): void {
         this.zoomInButton.el.classList.toggle('toolspace-row-button-disabled', !b);
         this.zoomInNOutButton.setIsEnabledLeft(b);
     }
 
-    setEnableZoomOut (b: boolean): void {
+    setEnableZoomOut(b: boolean): void {
         this.zoomOutButton.el.classList.toggle('toolspace-row-button-disabled', !b);
         this.zoomInNOutButton.setIsEnabledRight(b);
     }
 
-    setEnableUndo (b: boolean): void {
+    setEnableUndo(b: boolean): void {
         this.undoButton.el.classList.toggle('toolspace-row-button-disabled', !b);
         this.undoNRedoButton.setIsEnabledLeft(b);
     }
 
-    setEnableRedo (b: boolean): void {
+    setEnableRedo(b: boolean): void {
         this.redoButton.el.classList.toggle('toolspace-row-button-disabled', !b);
         this.undoNRedoButton.setIsEnabledRight(b);
     }
 
-    setActive (activeStr: TToolType, doEmit?: boolean): void {
+    setActive(activeStr: TToolType, doEmit?: boolean): void {
         if (this.currentActiveStr === activeStr) {
             return;
         }
@@ -483,7 +483,7 @@ export class ToolspaceToolRow {
         }
     }
 
-    getActive (): TToolType {
+    getActive(): TToolType {
         return this.currentActiveStr;
     }
 }

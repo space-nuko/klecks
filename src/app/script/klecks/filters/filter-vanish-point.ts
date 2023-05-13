@@ -1,14 +1,14 @@
-import {BB} from '../../bb/bb';
-import {KlCanvasPreview} from '../canvas-ui/canvas-preview';
-import {IFilterApply, IFilterGetDialogParam, IFilterGetDialogResult, IKlBasicLayer, IRGB} from '../kl-types';
-import {LANG} from '../../language/language';
-import {input} from '../ui/components/input';
-import {ColorOptions} from '../ui/components/color-options';
-import {drawVanishPoint} from '../image-operations/draw-vanish-point';
-import {KlSlider} from '../ui/components/kl-slider';
-import {eventResMs} from './filters-consts';
-import {IVector2D} from '../../bb/bb-types';
-import {TFilterHistoryEntry} from './filters';
+import { BB } from '../../bb/bb';
+import { KlCanvasPreview } from '../canvas-ui/canvas-preview';
+import { IFilterApply, IFilterGetDialogParam, IFilterGetDialogResult, IKlBasicLayer, IRGB } from '../kl-types';
+import { LANG } from '../../language/language';
+import { input } from '../ui/components/input';
+import { ColorOptions } from '../ui/components/color-options';
+import { drawVanishPoint } from '../image-operations/draw-vanish-point';
+import { KlSlider } from '../ui/components/kl-slider';
+import { eventResMs } from './filters-consts';
+import { IVector2D } from '../../bb/bb-types';
+import { TFilterHistoryEntry } from './filters';
 
 export type TFilterVanishPointInput = {
     x: number;
@@ -25,7 +25,7 @@ export type TFilterVanishPointHistoryEntry = TFilterHistoryEntry<
 
 export const filterVanishPoint = {
 
-    getDialog (params: IFilterGetDialogParam) {
+    getDialog(params: IFilterGetDialogParam) {
         const context = params.context;
         const klCanvas = params.klCanvas;
         if (!context || !klCanvas) {
@@ -53,7 +53,7 @@ export const filterVanishPoint = {
             y: context.canvas.height / 2,
             lines: 8,
             thickness: 2,
-            color: {r: 0, g: 0, b: 0},
+            color: { r: 0, g: 0, b: 0 },
             opacity: 1,
         };
 
@@ -66,7 +66,7 @@ export const filterVanishPoint = {
             value: settingsObj.lines,
             curve: 'quadratic',
             eventResMs: eventResMs,
-            onChange: function (val) {
+            onChange: function(val) {
                 settingsObj.lines = Math.round(val);
                 updatePreview();
             },
@@ -92,8 +92,8 @@ export const filterVanishPoint = {
         const xInput = input({
             init: settingsObj.x,
             type: 'number',
-            css: {width: '75px', marginRight: '20px'},
-            callback: function (v) {
+            css: { width: '75px', marginRight: '20px' },
+            callback: function(v) {
                 settingsObj.x = parseFloat(v);
                 updatePreview();
             },
@@ -101,8 +101,8 @@ export const filterVanishPoint = {
         const yInput = input({
             init: settingsObj.y,
             type: 'number',
-            css: {width: '75px', marginRight: '20px'},
-            callback: function (v) {
+            css: { width: '75px', marginRight: '20px' },
+            callback: function(v) {
                 settingsObj.y = parseFloat(v);
                 updatePreview();
             },
@@ -111,17 +111,17 @@ export const filterVanishPoint = {
             init: 2,
             type: 'number',
             min: 1,
-            css: {width: '75px', marginRight: '20px'},
-            callback: function (v) {
+            css: { width: '75px', marginRight: '20px' },
+            callback: function(v) {
                 settingsObj.thickness = parseFloat(v);
                 updatePreview();
             },
         });
 
-        let selectedRgbaObj = {r: 0, g: 0, b: 0, a: 1};
+        let selectedRgbaObj = { r: 0, g: 0, b: 0, a: 1 };
         const colorOptionsArr = [
-            {r: 0, g: 0, b: 0, a: 1},
-            {r: 255, g: 255, b: 255, a: 1},
+            { r: 0, g: 0, b: 0, a: 1 },
+            { r: 255, g: 255, b: 255, a: 1 },
         ];
         colorOptionsArr.push({
             r: params.currentColorRgb.r,
@@ -140,7 +140,7 @@ export const filterVanishPoint = {
         const colorOptions = new ColorOptions({
             label: LANG('shape-stroke'),
             colorArr: colorOptionsArr,
-            onChange: function (rgbaObj) {
+            onChange: function(rgbaObj) {
                 selectedRgbaObj = rgbaObj;
                 settingsObj.color = BB.copyObj(selectedRgbaObj);
                 updatePreview();
@@ -152,15 +152,15 @@ export const filterVanishPoint = {
             marginRight: '5px',
         };
         line1.append(
-            BB.el({content: 'X:', css: labelStyle}),
+            BB.el({ content: 'X:', css: labelStyle }),
             xInput,
-            BB.el({content: 'Y:', css: labelStyle}),
+            BB.el({ content: 'Y:', css: labelStyle }),
             yInput,
         );
         line2.append(
-            BB.el({content: LANG('shape-line-width') + ':', css: labelStyle}),
+            BB.el({ content: LANG('shape-line-width') + ':', css: labelStyle }),
             thicknessInput,
-            BB.el({css:{flexGrow: '1'}}),
+            BB.el({ css: { flexGrow: '1' } }),
             colorOptions.getElement(),
         );
 
@@ -219,11 +219,11 @@ export const filterVanishPoint = {
             state: null,
             oldSettings: null,
         };
-        function syncInputs (): void {
+        function syncInputs(): void {
             xInput.value = '' + settingsObj.x;
             yInput.value = '' + settingsObj.y;
         }
-        previewWrapper.oncontextmenu = function () {
+        previewWrapper.oncontextmenu = function() {
             return false;
         };
         previewInnerWrapper.style.touchAction = 'none';
@@ -234,12 +234,12 @@ export const filterVanishPoint = {
                     if (!inputs.state) {
                         inputs.state = 'move';
                         inputs.oldSettings = BB.copyObj(settingsObj);
-                        inputs.start = {x: event.relX / previewFactor, y: event.relY / previewFactor};
+                        inputs.start = { x: event.relX / previewFactor, y: event.relY / previewFactor };
                         inputs.end = null;
                     }
                 } else if (event.type === 'pointermove') {
                     if (inputs.state) {
-                        inputs.end = {x: event.relX / previewFactor, y: event.relY / previewFactor};
+                        inputs.end = { x: event.relX / previewFactor, y: event.relY / previewFactor };
 
                         settingsObj.x = Math.round(inputs.end.x - inputs.start.x + inputs.oldSettings.x);
                         settingsObj.y = Math.round(inputs.end.y - inputs.start.y + inputs.oldSettings.y);
@@ -257,7 +257,7 @@ export const filterVanishPoint = {
 
 
 
-        function updatePreview (): void {
+        function updatePreview(): void {
             const ctx = BB.ctx((previewLayer.image as HTMLCanvasElement));
             ctx.save();
             ctx.clearRect(0, 0, renderW, renderH);
@@ -285,14 +285,14 @@ export const filterVanishPoint = {
             klCanvasPreview.destroy();
             colorOptions.destroy();
         };
-        result.getInput = function (): TFilterVanishPointInput {
+        result.getInput = function(): TFilterVanishPointInput {
             result.destroy();
             return BB.copyObj(settingsObj);
         };
         return result;
     },
 
-    apply (params: IFilterApply<TFilterVanishPointInput>): boolean {
+    apply(params: IFilterApply<TFilterVanishPointInput>): boolean {
         const context = params.context;
         const klCanvas = params.klCanvas;
         const history = params.history;

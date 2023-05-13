@@ -5,12 +5,12 @@ import {IKlProject, TDropOption, TExportType} from '../../kl-types';
 import {SaveReminder} from '../components/save-reminder';
 import {ProjectStore} from '../../storage/project-store';
 import {LANG} from '../../../language/language';
-import newImageImg from '/src/app/img/ui/new-image.svg';
-import exportImg from '/src/app/img/ui/export.svg';
-import shareImg from '/src/app/img/ui/share.svg';
-import uploadImg from '/src/app/img/ui/upload.svg';
-import importImg from '/src/app/img/ui/import.svg';
-import copyImg from '/src/app/img/ui/copy.svg';
+import newImageImg from '../../../../img/ui/new-image.svg';
+import exportImg from '../../../../img/ui/export.svg';
+import shareImg from '../../../../img/ui/share.svg';
+import uploadImg from '../../../../img/ui/upload.svg';
+import importImg from '../../../../img/ui/import.svg';
+import copyImg from '../../../../img/ui/copy.svg';
 
 export class FileTab {
 

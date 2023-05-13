@@ -1,58 +1,59 @@
-import {KL} from '../klecks/kl';
-import {klHistory, TMiscFocusLayerHistoryEntry} from '../klecks/history/kl-history';
-import {BB} from '../bb/bb';
-import {showIframeModal} from '../klecks/ui/modals/show-iframe-modal';
-import {EmbedToolspaceTopRow} from '../embed/embed-toolspace-top-row';
+import { KL } from '../klecks/kl';
+import { klHistory, TMiscFocusLayerHistoryEntry } from '../klecks/history/kl-history';
+import { BB } from '../bb/bb';
+import { showIframeModal } from '../klecks/ui/modals/show-iframe-modal';
+import { EmbedToolspaceTopRow } from '../embed/embed-toolspace-top-row';
 import {
     IGradient,
     IInitState,
     IKlProject,
+    TBrushUiInstance,
     TDrawEvent,
     TExportType,
     TKlCanvasLayer,
     TUiLayout,
 } from '../klecks/kl-types';
-import {importFilters} from '../klecks/filters/filters-lazy';
-import {base64ToBlob} from '../klecks/storage/base-64-to-blob';
-import {klCanvasToPsdBlob} from '../klecks/storage/kl-canvas-to-psd-blob';
-import {ProjectStore} from '../klecks/storage/project-store';
-import {SaveReminder} from '../klecks/ui/components/save-reminder';
-import {KlCanvasWorkspace} from '../klecks/canvas-ui/kl-canvas-workspace';
-import {KlCanvas} from '../klecks/canvas/kl-canvas';
-import {LANG} from '../language/language';
-import {LocalStorage} from '../bb/base/local-storage';
-import {LineSmoothing} from '../klecks/events/line-smoothing';
-import {LineSanitizer} from '../klecks/events/line-sanitizer';
-import {TabRow} from '../klecks/ui/components/tab-row';
-import {LayerPreview} from '../klecks/ui/components/layer-preview';
-import {KlColorSlider} from '../klecks/ui/components/kl-color-slider';
-import {ToolspaceToolRow} from '../klecks/ui/components/toolspace-tool-row';
-import {StatusOverlay} from '../klecks/ui/components/status-overlay';
-import {SaveToComputer} from '../klecks/storage/save-to-computer';
-import {ToolspaceCollapser} from '../klecks/ui/components/toolspace-collapser';
-import {ToolspaceScroller} from '../klecks/ui/components/toolspace-scroller';
-import {translateSmoothing} from '../klecks/utils/translate-smoothing';
-import {ImportHandler} from './import-handler';
+import { importFilters } from '../klecks/filters/filters-lazy';
+import { base64ToBlob } from '../klecks/storage/base-64-to-blob';
+import { klCanvasToPsdBlob } from '../klecks/storage/kl-canvas-to-psd-blob';
+import { ProjectStore } from '../klecks/storage/project-store';
+import { SaveReminder } from '../klecks/ui/components/save-reminder';
+import { KlCanvasWorkspace } from '../klecks/canvas-ui/kl-canvas-workspace';
+import { KlCanvas } from '../klecks/canvas/kl-canvas';
+import { LANG } from '../language/language';
+import { LocalStorage } from '../bb/base/local-storage';
+import { LineSmoothing } from '../klecks/events/line-smoothing';
+import { LineSanitizer } from '../klecks/events/line-sanitizer';
+import { TabRow } from '../klecks/ui/components/tab-row';
+import { LayerPreview } from '../klecks/ui/components/layer-preview';
+import { KlColorSlider } from '../klecks/ui/components/kl-color-slider';
+import { ToolspaceToolRow } from '../klecks/ui/components/toolspace-tool-row';
+import { StatusOverlay } from '../klecks/ui/components/status-overlay';
+import { SaveToComputer } from '../klecks/storage/save-to-computer';
+import { ToolspaceCollapser } from '../klecks/ui/components/toolspace-collapser';
+import { ToolspaceScroller } from '../klecks/ui/components/toolspace-scroller';
+import { translateSmoothing } from '../klecks/utils/translate-smoothing';
+import { ImportHandler } from './import-handler';
 
-import toolPaintImg from '/src/app/img/ui/tool-paint.svg';
-import toolHandImg from '/src/app/img/ui/tool-hand.svg';
-import toolFillImg from '/src/app/img/ui/tool-fill.svg';
-import toolGradientImg from '/src/app/img/ui/tool-gradient.svg';
-import toolTextImg from '/src/app/img/ui/tool-text.svg';
-import toolShapeImg from '/src/app/img/ui/tool-shape.svg';
-import tabSettingsImg from '/src/app/img/ui/tab-settings.svg';
-import tabLayersImg from '/src/app/img/ui/tab-layers.svg';
-import {LayerManager} from '../klecks/ui/tool-tabs/layer-manager/layer-manager';
-import {IVector2D} from '../bb/bb-types';
-import {createConsoleApi} from './console-api';
-import {ERASE_COLOR} from '../klecks/brushes/erase-color';
+import toolPaintImg from '../../img/ui/tool-paint.svg';
+import toolHandImg from '../../img/ui/tool-hand.svg';
+import toolFillImg from '../../img/ui/tool-fill.svg';
+import toolGradientImg from '../../img/ui/tool-gradient.svg';
+import toolTextImg from '../../img/ui/tool-text.svg';
+import toolShapeImg from '../../img/ui/tool-shape.svg';
+import tabSettingsImg from '../../img/ui/tab-settings.svg';
+import tabLayersImg from '../../img/ui/tab-layers.svg';
+import { LayerManager } from '../klecks/ui/tool-tabs/layer-manager/layer-manager';
+import { IVector2D } from '../bb/bb-types';
+import { createConsoleApi } from './console-api';
+import { ERASE_COLOR } from '../klecks/brushes/erase-color';
 
-type KlAppOptionsEmbed = {
-    url: string;
+export type KlAppOptionsEmbed = {
+    url: string | null;
     onSubmit: (onSuccess: () => void, onError: () => void) => void;
 };
 
-interface IKlAppOptions {
+export interface IKlAppOptions {
     saveReminder?: SaveReminder;
     projectStore?: ProjectStore;
     logoImg?: string; // app logo
@@ -63,6 +64,7 @@ interface IKlAppOptions {
         imgurKey?: string; // for imgur uploads
     };
     aboutEl?: HTMLElement; // replaces info about Klecks in settings tab
+    targetEl?: HTMLElement;
 }
 
 importFilters();
@@ -91,8 +93,9 @@ export class KlApp {
     private readonly layerManager: LayerManager;
     private readonly toolspaceScroller: ToolspaceScroller;
     private readonly bottomBarWrapper: HTMLElement;
+    private readonly targetEl: HTMLElement;
 
-    private updateCollapse (): void {
+    private updateCollapse(): void {
 
         //collapser
         if (this.uiWidth < this.collapseThreshold) {
@@ -162,15 +165,15 @@ export class KlApp {
         }
     }
 
-    private updateBottomBar (): void {
+    private updateBottomBar(): void {
         if (!this.bottomBar) {
             return;
         }
-        const isVisible = (this.toolspaceInner.scrollHeight + 40 < window.innerHeight);
+        const isVisible = (this.toolspaceInner.scrollHeight + 40 < this.targetEl.clientHeight);
         this.bottomBarWrapper.style.display = isVisible ? '' : 'none';
     }
 
-    private updateUi (): void {
+    private updateUi(): void {
         this.toolspace.classList.toggle('kl-toolspace--left', this.uiState === 'left');
         this.toolspace.classList.toggle('kl-toolspace--right', this.uiState === 'right');
         if (this.uiState === 'left') {
@@ -198,7 +201,7 @@ export class KlApp {
     }
 
     // -------- public --------
-    constructor (
+    constructor(
         pProject: IKlProject | null,
         pOptions: IKlAppOptions,
     ) {
@@ -219,14 +222,15 @@ export class KlApp {
                 bottom: '0',
             },
         });
-        this.uiWidth = Math.max(0, window.innerWidth);
-        this.uiHeight = Math.max(0, window.innerHeight);
+        this.targetEl = pOptions.targetEl || document.body;
+        this.uiWidth = Math.max(0, this.targetEl.clientWidth);
+        this.uiHeight = Math.max(0, this.targetEl.clientHeight);
         let exportType: TExportType = 'png';
         this.klCanvas = new KL.KlCanvas(
             pProject ? {
                 projectObj: pProject,
             } : {
-                width: Math.max(10, Math.min(klMaxCanvasSize, window.innerWidth < this.collapseThreshold ? this.uiWidth : this.uiWidth - this.toolWidth)),
+                width: Math.max(10, Math.min(klMaxCanvasSize, this.targetEl.clientWidth < this.collapseThreshold ? this.uiWidth : this.uiWidth - this.toolWidth)),
                 height: Math.max(10, Math.min(klMaxCanvasSize, this.uiHeight)),
             }, this.embed ? -1 : 0);
         this.klCanvas.setHistory(klHistory);
@@ -234,7 +238,7 @@ export class KlApp {
         let mainTabRow: TabRow | undefined;
 
         if (!pOptions.saveReminder) {
-            pOptions.saveReminder = {init: () => {}, reset: () => {}} as SaveReminder;
+            pOptions.saveReminder = { init: () => { }, reset: () => { } } as SaveReminder;
         }
 
         if (pProject) {
@@ -245,12 +249,12 @@ export class KlApp {
         } else {
             klHistory.pause(true);
             this.klCanvas.addLayer();
-            this.klCanvas.layerFill(0, {r: ERASE_COLOR, g: ERASE_COLOR, b: ERASE_COLOR});
+            this.klCanvas.layerFill(0, { r: ERASE_COLOR, g: ERASE_COLOR, b: ERASE_COLOR });
             klHistory.pause(false);
         }
         try {
             initState = {
-                canvas: new KL.KlCanvas({copy: this.klCanvas}, this.embed ? -1 : 0),
+                canvas: new KL.KlCanvas({ copy: this.klCanvas }, this.embed ? -1 : 0),
                 focus: this.klCanvas.getLayerCount() - 1,
                 brushes: {},
             };
@@ -269,7 +273,7 @@ export class KlApp {
 
 
         let currentColor = new BB.RGB(0, 0, 0);
-        let currentBrushUi;
+        let currentBrushUi: TBrushUiInstance | null;
         let currentBrushId: string;
         let lastNonEraserBrushId: string;
         let currentLayerCtx = this.klCanvas.getLayerContext(this.klCanvas.getLayerCount() - 1);
@@ -531,10 +535,10 @@ export class KlApp {
                 }
 
                 if (comboStr === 'plus') {
-                    this.klCanvasWorkspace.zoomByStep(keyListener.isPressed('shift') ? 1/8 : 1/2);
+                    this.klCanvasWorkspace.zoomByStep(keyListener.isPressed('shift') ? 1 / 8 : 1 / 2);
                 }
                 if (comboStr === 'minus') {
-                    this.klCanvasWorkspace.zoomByStep(keyListener.isPressed('shift') ? -1/8 : -1/2);
+                    this.klCanvasWorkspace.zoomByStep(keyListener.isPressed('shift') ? -1 / 8 : -1 / 2);
                 }
                 if (comboStr === 'home') {
                     this.klCanvasWorkspace.fitView();
@@ -609,7 +613,7 @@ export class KlApp {
                 }
 
 
-                if (['r+left','r+right'].includes(comboStr)) {
+                if (['r+left', 'r+right'].includes(comboStr)) {
                     if (keyStr === 'left') {
                         this.klCanvasWorkspace.setAngle(-15, true);
                         handUi.update(this.klCanvasWorkspace.getScale(), this.klCanvasWorkspace.getAngleDeg());
@@ -638,7 +642,7 @@ export class KlApp {
                 if (['delete', 'backspace'].includes(comboStr)) {
                     const layerIndex = this.klCanvas.getLayerIndex(currentLayerCtx.canvas);
                     if (layerIndex === 0 && !brushUiMap.eraserBrush.getIsTransparentBg()) {
-                        this.klCanvas.layerFill(layerIndex, {r: 255, g: 255, b: 255}, 'source-in');
+                        this.klCanvas.layerFill(layerIndex, { r: 255, g: 255, b: 255 }, 'source-in');
                     } else {
                         this.klCanvas.clearLayer(layerIndex);
                     }
@@ -694,7 +698,7 @@ export class KlApp {
             },
         });
 
-        const brushUiMap = {};
+        const brushUiMap: Record<string, TBrushUiInstance> = {};
         // create brush UIs
         Object.entries(KL.brushesUI).forEach(([b, brushUi]) => {
             const ui = new brushUi.Ui({
@@ -855,10 +859,10 @@ export class KlApp {
                 this.klColorSlider.pickingDone();
             },
             onZoomIn: () => {
-                this.klCanvasWorkspace.zoomByStep(keyListener.isPressed('shift') ? 1/8 : 1/2);
+                this.klCanvasWorkspace.zoomByStep(keyListener.isPressed('shift') ? 1 / 8 : 1 / 2);
             },
             onZoomOut: () => {
-                this.klCanvasWorkspace.zoomByStep(keyListener.isPressed('shift') ? -1/8 : -1/2);
+                this.klCanvasWorkspace.zoomByStep(keyListener.isPressed('shift') ? -1 / 8 : -1 / 2);
             },
             onUndo: () => {
                 undoRedoCatchup.undo();
@@ -1171,7 +1175,7 @@ export class KlApp {
                 maxCanvasSize: klMaxCanvasSize,
                 canvasWidth: this.klCanvas.getWidth(),
                 canvasHeight: this.klCanvas.getHeight(),
-                workspaceWidth: window.innerWidth < this.collapseThreshold ? this.uiWidth : this.uiWidth - this.toolWidth,
+                workspaceWidth: this.targetEl.clientWidth < this.collapseThreshold ? this.uiWidth : this.uiWidth - this.toolWidth,
                 workspaceHeight: this.uiHeight,
                 onConfirm: (width, height, color) => {
                     this.klCanvas.reset({
@@ -1185,7 +1189,7 @@ export class KlApp {
                     this.klCanvasWorkspace.resetView();
                     handUi.update(this.klCanvasWorkspace.getScale(), this.klCanvasWorkspace.getAngleDeg());
                 },
-                onCancel: () => {},
+                onCancel: () => { },
             });
         };
 
@@ -1194,7 +1198,7 @@ export class KlApp {
                 canvas: this.klCanvas.getCompleteCanvas(1),
                 fileName: BB.getDate() + filenameBase + '.png',
                 title: BB.getDate() + filenameBase + '.png',
-                callback: callback ? callback : () => {},
+                callback: callback ? callback : () => { },
             });
         };
 
@@ -1544,10 +1548,10 @@ export class KlApp {
 
         {
             window.addEventListener('resize', () => {
-                this.resize(window.innerWidth, window.innerHeight);
+                this.resize(this.targetEl.clientWidth, this.targetEl.clientHeight);
             });
             window.addEventListener('orientationchange', () => {
-                this.resize(window.innerWidth, window.innerHeight);
+                this.resize(this.targetEl.clientWidth, this.targetEl.clientHeight);
             });
 
             // iPad doesn't trigger 'resize' event when using text zoom, although it's resizing the window.
@@ -1567,7 +1571,7 @@ export class KlApp {
             });
             try {
                 // Not all browsers support ResizeObserver. Not critical though.
-                const observer = new ResizeObserver(() => this.resize(window.innerWidth, window.innerHeight));
+                const observer = new ResizeObserver(() => this.resize(this.targetEl.clientWidth, this.targetEl.clientHeight));
                 observer.observe(windowResizeWatcher);
             } catch (e) {
                 windowResizeWatcher.parentNode.removeChild(windowResizeWatcher);
@@ -1591,11 +1595,11 @@ export class KlApp {
 
     // -------- interface --------
 
-    getEl (): HTMLElement {
+    getEl(): HTMLElement {
         return this.klRootEl;
     }
 
-    resize (w: number, h: number): void {
+    resize(w: number, h: number): void {
 
         // iPad scrolls down when increasing text zoom
         if (window.scrollY > 0) {
@@ -1617,23 +1621,23 @@ export class KlApp {
         this.toolspaceToolRow.setIsSmall(this.uiHeight < 540);
     }
 
-    out (msg: string): void {
+    out(msg: string): void {
         this.statusOverlay.out(msg);
     }
 
-    getPNG (): Blob {
+    getPNG(): Blob {
         return base64ToBlob(this.klCanvas.getCompleteCanvas(1).toDataURL('image/png'));
     }
 
-    getPSD = async ():  Promise<Blob> => {
+    getPSD = async (): Promise<Blob> => {
         return await klCanvasToPsdBlob(this.klCanvas);
     };
 
-    getProject (): IKlProject {
+    getProject(): IKlProject {
         return this.klCanvas.getProject();
     }
 
-    swapUiLeftRight (): void {
+    swapUiLeftRight(): void {
         this.uiState = this.uiState === 'left' ? 'right' : 'left';
         if (!this.embed) {
             LocalStorage.setItem('uiState', this.uiState);
@@ -1641,11 +1645,11 @@ export class KlApp {
         this.updateUi();
     }
 
-    saveAsPsd (): void {
+    saveAsPsd(): void {
         this.saveToComputer.save('psd');
     }
 
-    isDrawing (): boolean {
+    isDrawing(): boolean {
         return this.lineSanitizer.getIsDrawing() || this.klCanvasWorkspace.getIsDrawing();
     }
 }

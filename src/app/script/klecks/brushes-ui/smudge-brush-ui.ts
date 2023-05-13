@@ -1,15 +1,15 @@
-import {BB} from '../../bb/bb';
-import {brushes} from '../brushes/brushes';
-import {eventResMs} from './brushes-consts';
-import {klHistory} from '../history/kl-history';
-import {Checkbox} from '../ui/components/checkbox';
-import {KlSlider} from '../ui/components/kl-slider';
-import {createPenPressureToggle} from '../ui/components/create-pen-pressure-toggle';
-import brushIconImg from '/src/app/img/ui/brush-smudge.svg';
-import {IBrushUi} from '../kl-types';
-import {LANG, languageStrings} from '../../language/language';
+import { BB } from '../../bb/bb';
+import { brushes } from '../brushes/brushes';
+import { eventResMs } from './brushes-consts';
+import { klHistory } from '../history/kl-history';
+import { Checkbox } from '../ui/components/checkbox';
+import { KlSlider } from '../ui/components/kl-slider';
+import { createPenPressureToggle } from '../ui/components/create-pen-pressure-toggle';
+import brushIconImg from '../../../img/ui/brush-smudge.svg';
+import { IBrushUi } from '../kl-types';
+import { LANG, languageStrings } from '../../language/language';
 
-export const smudgeBrushUi = (function () {
+export const smudgeBrushUi = (function() {
     const brushInterface: IBrushUi = {
         image: brushIconImg,
         tooltip: LANG('brush-smudge'),
@@ -30,7 +30,7 @@ export const smudgeBrushUi = (function () {
         brushInterface.tooltip = LANG('brush-smudge');
     });
 
-    brushInterface.Ui = function (p) {
+    brushInterface.Ui = function(p) {
         const div = document.createElement('div'); // the gui
         const brush = new brushes.SmudgeBrush();
         brush.setHistory(klHistory);
@@ -41,7 +41,7 @@ export const smudgeBrushUi = (function () {
         const lockAlphaToggle = new Checkbox({
             init: brush.getLockAlpha(),
             label: LANG('lock-alpha'),
-            callback: function (b) {
+            callback: function(b) {
                 brush.setLockAlpha(b);
             },
             doHighlight: true,
@@ -50,12 +50,12 @@ export const smudgeBrushUi = (function () {
 
         const spacingSpline = new BB.SplineInterpolator([[0, 15], [8, 7], [14, 4], [30, 3], [50, 2.7], [100, 2]]);
 
-        function setSize (size) {
+        function setSize(size) {
             brush.setSize(size);
             brush.setSpacing(Math.max(2, spacingSpline.interpolate(size)) / 15);
         }
 
-        function init () {
+        function init() {
             sizeSlider = new KlSlider({
                 label: LANG('brush-size'),
                 width: 225,
@@ -97,10 +97,10 @@ export const smudgeBrushUi = (function () {
                 },
             });
 
-            const pressureSizeToggle = createPenPressureToggle(false, function (b) {
+            const pressureSizeToggle = createPenPressureToggle(false, function(b) {
                 brush.sizePressure(b);
             });
-            const pressureOpacityToggle = createPenPressureToggle(false, function (b) {
+            const pressureOpacityToggle = createPenPressureToggle(false, function(b) {
                 brush.opacityPressure(b);
             });
 
@@ -142,54 +142,54 @@ export const smudgeBrushUi = (function () {
 
         init();
 
-        this.increaseSize = function (f) {
+        this.increaseSize = function(f) {
             if (!brush.getIsDrawing()) {
                 sizeSlider.changeSliderValue(f);
             }
         };
-        this.decreaseSize = function (f) {
+        this.decreaseSize = function(f) {
             if (!brush.getIsDrawing()) {
                 sizeSlider.changeSliderValue(-f);
             }
         };
 
-        this.getSize = function () {
+        this.getSize = function() {
             return brush.getSize();
         };
-        this.setSize = function (size) {
+        this.setSize = function(size) {
             setSize(size);
             sizeSlider.setValue(size);
         };
-        this.getOpacity = function () {
+        this.getOpacity = function() {
             return brush.getOpacity();
         };
-        this.setOpacity = function (opacity) {
+        this.setOpacity = function(opacity) {
             brush.setOpacity(opacity);
             opacitySlider.setValue(opacity);
         };
 
-        this.setColor = function (c) {
+        this.setColor = function(c) {
             brush.setColor(c);
         };
-        this.setContext = function (c) {
+        this.setContext = function(c) {
             brush.setContext(c);
         };
-        this.startLine = function (x, y, p) {
+        this.startLine = function(x, y, p) {
             brush.startLine(x, y, p);
         };
-        this.goLine = function (x, y, p) {
+        this.goLine = function(x, y, p) {
             brush.goLine(x, y, p);
         };
-        this.endLine = function (x, y) {
+        this.endLine = function(x, y) {
             brush.endLine();
         };
-        this.getBrush = function () {
+        this.getBrush = function() {
             return brush;
         };
-        this.isDrawing = function () {
+        this.isDrawing = function() {
             return brush.getIsDrawing();
         };
-        this.getElement = function () {
+        this.getElement = function() {
             return div;
         };
     };

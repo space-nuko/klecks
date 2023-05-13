@@ -1,12 +1,12 @@
-import {IKeyString} from '../../../../bb/bb-types';
-import {dialogCounter} from '../modal-count';
-import {BB} from '../../../../bb/bb';
-import {LANG} from '../../../../language/language';
+import { IKeyString } from '../../../../bb/bb-types';
+import { dialogCounter } from '../modal-count';
+import { BB } from '../../../../bb/bb';
+import { LANG } from '../../../../language/language';
 import './scroll-fix';
-import cancelImg from '/src/app/img/ui/cancel.svg';
-import checkImg from '/src/app/img/ui/check.svg';
+import cancelImg from '../../../../../img/ui/cancel.svg';
+import checkImg from '../../../../../img/ui/check.svg';
 
-export function showModal (
+export function showModal(
     p: {
         target: HTMLElement;
         div?: HTMLElement; // node with content
@@ -102,7 +102,7 @@ export function showModal (
         content: [
             xButton,
             BB.el({
-                content:p.message,
+                content: p.message,
                 css: {
                     marginBottom: p.div ? '10px' : undefined,
                     marginRight: '15px',
@@ -142,7 +142,7 @@ export function showModal (
     }
 
     const keyListener = new BB.KeyListener({
-        onDown: function (keyStr, e, comboStr) {
+        onDown: function(keyStr, e, comboStr) {
             if (isClosed) {
                 return;
             }
@@ -247,7 +247,7 @@ export function showModal (
         });
     }
 
-    function close (value: string) {
+    function close(value: string) {
         if (isClosed) {
             return;
         }
@@ -271,7 +271,7 @@ export function showModal (
     }
 
     if (p.closeFunc) {
-        p.closeFunc(function () {
+        p.closeFunc(function() {
             close('Cancel');
         });
     }

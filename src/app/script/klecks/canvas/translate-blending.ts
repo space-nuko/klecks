@@ -1,8 +1,8 @@
-import {TMixMode} from '../kl-types';
-import {LANG} from '../../language/language';
-import {TTranslationCode} from '../../../languages/languages';
+import { TMixMode } from '../kl-types';
+import { LANG } from '../../language/language';
+import { TTranslationCode } from '../../../languages/languages';
 
-export function translateBlending (blendMode?: TMixMode): string {
+export function translateBlending(blendMode?: TMixMode): string {
     if (!blendMode) {
         return LANG('layers-blend-normal');
     }

@@ -1,6 +1,6 @@
 import {BB} from '../../../bb/bb';
-import angleImg from '/src/app/img/ui/angle.svg';
-import rotateImg from '/src/app/img/ui/edit-rotate.svg';
+import angleImg from '../../../../img/ui/angle.svg';
+import rotateImg from '../../../../img/ui/edit-rotate.svg';
 import {LANG} from '../../../language/language';
 
 /**
