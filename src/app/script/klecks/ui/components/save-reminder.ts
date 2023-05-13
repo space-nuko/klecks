@@ -1,10 +1,10 @@
-import {KL} from '../../kl';
-import {BB} from '../../../bb/bb';
-import {KlHistoryInterface} from '../../history/kl-history';
-import {LANG} from '../../../language/language';
-import {BrowserStorageUi} from './browser-storage-ui';
-import {ProjectStore} from '../../storage/project-store';
-import {IKlProject} from '../../kl-types';
+import { KL } from '../../kl';
+import { BB } from '../../../bb/bb';
+import { KlHistoryInterface } from '../../history/kl-history';
+import { LANG } from '../../../language/language';
+import { BrowserStorageUi } from './browser-storage-ui';
+import { ProjectStore } from '../../storage/project-store';
+import { IKlProject } from '../../kl-types';
 
 
 const reminderTimelimitMs = 1000 * 60 * 20; // 20 minutes
@@ -22,7 +22,7 @@ export class SaveReminder {
     private unsavedInterval;
     private closeFunc: () => void;
 
-    showPopup (): void {
+    showPopup(): void {
         if (!this.projectStore || !this.getProject) {
             throw new Error('projectStore and getProject need to be set');
         }
@@ -114,7 +114,7 @@ export class SaveReminder {
         }, 40);
     }
 
-    constructor (
+    constructor(
         private history: KlHistoryInterface,
         private showReminder: boolean,
         private changeTitle: boolean,
@@ -123,9 +123,10 @@ export class SaveReminder {
         private projectStore: ProjectStore | null, // needed if showReminder
         private getProject: (() => IKlProject) | null, // needed if showReminder
         private title: string = 'Klecks',
+        private warnOnPageClose: boolean = true
     ) { }
 
-    init (): void {
+    init(): void {
         if (this.lastSavedActionNumber !== null) { // already initialized
             return;
         }
@@ -153,15 +154,15 @@ export class SaveReminder {
         }
 
         // confirmation dialog when closing tab
-        function onBeforeUnload (e) {
+        function onBeforeUnload(e) {
             e.preventDefault();
             e.returnValue = '';
         }
 
         this.history.addListener(() => {
             const actionNumber = this.history.getActionNumber();
-            if (this.lastSavedActionNumber !== actionNumber) {
-                window.onbeforeunload =  onBeforeUnload;
+            if (this.lastSavedActionNumber !== actionNumber && this.warnOnPageClose) {
+                window.onbeforeunload = onBeforeUnload;
             } else {
                 window.onbeforeunload = null;
             }
@@ -191,7 +192,7 @@ export class SaveReminder {
         }
     }
 
-    reset (): void {
+    reset(): void {
         if (this.lastSavedActionNumber === null) { // not initialized
             return;
         }

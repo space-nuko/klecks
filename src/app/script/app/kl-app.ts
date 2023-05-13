@@ -720,6 +720,7 @@ export class KlApp {
         this.statusOverlay = new KL.StatusOverlay();
 
         this.toolspace = BB.el({
+            parent: this.targetEl,
             className: 'kl-toolspace',
             css: {
                 position: 'absolute',

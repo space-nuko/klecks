@@ -16,6 +16,8 @@ export interface IEmbedParams {
     bottomBar?: HTMLElement;
     aboutEl?: HTMLElement;
     targetEl?: HTMLElement;
+    title?: string;
+    warnOnPageClose?: boolean
 }
 
 export interface IReadPSD {
@@ -46,6 +48,9 @@ export class Embed {
         if (p.project) {
             this.openProject(p.project);
         }
+
+        if (p.warnOnPageClose === undefined)
+            p.warnOnPageClose = true;
     }
 
     openProject(project: IKlProject) {
@@ -63,6 +68,8 @@ export class Embed {
                 () => this.klApp ? this.klApp.isDrawing() : false,
                 null,
                 null,
+                this.p.title,
+                this.p.warnOnPageClose
             );
             this.klApp = new KlApp(
                 project,
@@ -85,8 +92,11 @@ export class Embed {
             this.loadingScreenEl = null;
             this.loadingScreenTextEl = null;
 
-            const target = this.p.targetEl || document.body;
-            target.append(this.klApp.getEl());
+            const el = this.klApp.getEl();
+            if (this.p.targetEl)
+                this.p.targetEl.appendChild(el)
+            else
+                document.body.append(el);
         } catch (e) {
             if (this.loadingScreenTextEl) {
                 this.loadingScreenTextEl.textContent = '❌ ' + e;

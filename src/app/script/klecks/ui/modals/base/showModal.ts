@@ -25,10 +25,11 @@ export function showModal(
     dialogCounter.increase();
     let isClosed = false;
 
+    p.target ||= document.body;
 
     // need this extra layer because chrome mobile otherwise scrolls the page and then glitches as the address bar goes away
     const rootRootEl = BB.el({
-        parent: document.body,
+        parent: p.target,
         css: {
             position: 'absolute',
             left: '0',
@@ -255,7 +256,7 @@ export function showModal(
         isClosed = true;
         BB.clearSelection();
         BB.unfocusAnyInput();
-        document.body.removeChild(rootRootEl);
+        p.target.removeChild(rootRootEl);
         dialogCounter.decrease();
         BB.destroyEl(xButton);
         BB.destroyEl(bgEl);

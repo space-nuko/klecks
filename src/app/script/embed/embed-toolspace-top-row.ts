@@ -16,8 +16,9 @@ export class EmbedToolspaceTopRow {
 
     // ---- public ----
 
-    constructor(p: { onSubmit: () => void; onLeftRight: () => void; onHelp: () => void }) {
+    constructor(p: { parent: HTMLElement, onSubmit: () => void; onLeftRight: () => void; onHelp: () => void }) {
         this.rootEl = BB.el({
+            parent: p.parent,
             className: 'kl-toolspace-row',
             css: {
                 height: '36px',
