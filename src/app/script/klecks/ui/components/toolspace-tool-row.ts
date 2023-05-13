@@ -57,6 +57,7 @@ export class ToolspaceToolRow {
         }
     ) {
         this.rootEl = BB.el({
+            parent: p.parent,
             className: 'kl-toolspace-row',
             css: {
                 height: '54px',
