@@ -1,15 +1,12 @@
-import {BB} from '../../bb/bb';
-import {IHistoryEntry, KlHistoryInterface, THistoryInnerActions} from '../history/kl-history';
-import {KL} from '../kl';
-import {IRGB, TPressureInput} from '../kl-types';
+import { BB } from '../../bb/bb';
+import { IHistoryEntry, KlHistoryInterface, THistoryInnerActions } from '../history/kl-history';
+import { KL } from '../kl';
+import { IRGB, TPressureInput } from '../kl-types';
 
 export interface ISketchyBrushHistoryEntry extends IHistoryEntry {
     tool: ['brush', 'SketchyBrush'];
     actions: THistoryInnerActions<SketchyBrush>[];
 }
-
-const sampleCanvas = BB.canvas(32, 32);
-const sampleCtx = BB.ctx(sampleCanvas);
 
 export class SketchyBrush {
 
@@ -22,7 +19,7 @@ export class SketchyBrush {
     private lastX: number = 0;
     private lastY: number = 0;
     private inputIsDrawing: boolean = false;
-    private lastInput: TPressureInput = {x: 0, y: 0, pressure: 0};
+    private lastInput: TPressureInput = { x: 0, y: 0, pressure: 0 };
     private history: KlHistoryInterface = new KL.DecoyKlHistory();
     private historyEntry: ISketchyBrushHistoryEntry | undefined;
     private sketchySeed: number = 0;
@@ -41,70 +38,75 @@ export class SketchyBrush {
         },
     ];
 
+    private sampleCanvas;
+    private sampleCtx;
 
-    private rand (): number {
+    private rand(): number {
         this.sketchySeed++;
         return Math.sin(6324634.2345 * Math.cos(this.sketchySeed * 5342.3423)) * 0.5 + 0.5;
     }
 
     // ---- public ----
-    constructor () {}
+    constructor() {
+        this.sampleCanvas = BB.canvas(32, 32);
+        this.sampleCtx = BB.ctx(this.sampleCanvas);
+    }
 
     // ---- interface ----
 
-    setHistory (l: KlHistoryInterface): void {
+    setHistory(l: KlHistoryInterface): void {
         this.history = l;
     }
 
-    setSeed (s: number): void {
+    setSeed(s: number): void {
         this.sketchySeed = parseInt('' + s);
     }
 
-    getSeed (): number {
+    getSeed(): number {
         return parseInt('' + this.sketchySeed);
     }
 
-    getSize (): number {
+    getSize(): number {
         return this.settingSize / 2;
     }
 
-    setColor (c: IRGB): void {
+    setColor(c: IRGB): void {
         this.settingColor = c;
     }
 
-    getOpacity (): number {
+    getOpacity(): number {
         return this.settingOpacity;
     }
 
-    setOpacity (o: number): void {
+    setOpacity(o: number): void {
         this.settingOpacity = o;
     }
 
-    getBlending (): number {
+    getBlending(): number {
         return this.settingBlending;
     }
 
-    setBlending (b: number): void {
+    setBlending(b: number): void {
         this.settingBlending = b;
     }
 
-    setSize (s: number): void {
+    setSize(s: number): void {
         this.settingSize = s * 2;
     }
 
-    getScale (): number {
+    getScale(): number {
         return this.settingScale;
     }
 
-    setScale (s: number): void {
+    setScale(s: number): void {
         this.settingScale = s;
     }
 
-    setContext (c: CanvasRenderingContext2D): void {
+    setContext(c: CanvasRenderingContext2D): void {
         this.context = c;
     }
 
-    startLine (x: number, y: number, pressure: number, shift?: boolean): void {
+    startLine(x: number, y: number, pressure: number, shift?: boolean): void {
         if (shift && this.lastInput.x) {
             this.inputIsDrawing = true;
             this.endLine();
@@ -147,7 +149,7 @@ export class SketchyBrush {
 
     }
 
-    goLine (p_x: number, p_y: number, pressure: number, preMixedColor: IRGB): void {
+    goLine(p_x: number, p_y: number, pressure: number, preMixedColor: IRGB): void {
         if (!this.inputIsDrawing || (p_x === this.lastInput.x && p_y === this.lastInput.y)) {
             return;
         }
@@ -229,11 +231,11 @@ export class SketchyBrush {
         this.lastInput.y = y;
         this.historyEntry!.actions!.push({
             action: 'goLine',
-            params: [p_x, p_y, pressure, {r: mixr, g: mixg, b: mixb}],
+            params: [p_x, p_y, pressure, { r: mixr, g: mixg, b: mixb }],
         });
     }
 
-    endLine (): void {
+    endLine(): void {
         this.inputIsDrawing = false;
         this.count = 0;
         this.points = [];
@@ -248,7 +250,7 @@ export class SketchyBrush {
     }
     //cheap n' ugly
 
-    drawLineSegment (x1: number, y1: number, x2: number, y2: number): void {
+    drawLineSegment(x1: number, y1: number, x2: number, y2: number): void {
         this.lastInput.x = x2;
         this.lastInput.y = y2;
 
@@ -272,14 +274,14 @@ export class SketchyBrush {
             mixw -= mixx;
             mixh -= mixy;
             if (mixw > 0 && mixh > 0) {
-                const w = Math.min(sampleCanvas.width, mixw);
-                const h = Math.min(sampleCanvas.height, mixh);
-                sampleCtx.save();
-                sampleCtx.globalCompositeOperation = 'copy';
-                sampleCtx.drawImage(this.context.canvas, mixx, mixy, mixw, mixh, 0, 0, w, h);
-                sampleCtx.restore();
+                const w = Math.min(this.sampleCanvas.width, mixw);
+                const h = Math.min(this.sampleCanvas.height, mixh);
+                this.sampleCtx.save();
+                this.sampleCtx.globalCompositeOperation = 'copy';
+                this.sampleCtx.drawImage(this.context.canvas, mixx, mixy, mixw, mixh, 0, 0, w, h);
+                this.sampleCtx.restore();
 
-                const imdat = sampleCtx.getImageData(mixx, mixy, mixw, mixh);
+                const imdat = this.sampleCtx.getImageData(mixx, mixy, mixw, mixh);
                 let countmix = 0;
                 for (let i = 0; i < imdat.data.length; i += 4) {
                     mixr += imdat.data[i + 0];
@@ -337,7 +339,7 @@ export class SketchyBrush {
     }
 
 
-    isDrawing (): boolean {
+    isDrawing(): boolean {
         return this.inputIsDrawing;
     }
 }

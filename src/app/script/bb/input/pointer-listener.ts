@@ -1,7 +1,7 @@
-import {eventUsesHighResTimeStamp, hasPointerEvents, isFirefox} from '../base/browser';
-import {WheelCleaner} from './wheel-cleaner';
-import {IPointerEvent, IWheelEvent, TPointerButton, TPointerEventType, TPointerType} from './event.types';
-import {PressureNormalizer} from './pressure-normalizer';
+import { eventUsesHighResTimeStamp, hasPointerEvents, isFirefox } from '../base/browser';
+import { WheelCleaner } from './wheel-cleaner';
+import { IPointerEvent, IWheelEvent, TPointerButton, TPointerEventType, TPointerType } from './event.types';
+import { PressureNormalizer } from './pressure-normalizer';
 
 export interface IPointerListenerParams {
     target: HTMLElement | SVGElement;
@@ -66,7 +66,7 @@ interface TExtendedDOMPointerEvent extends PointerEvent {
 // keeping track of pointers for movement fallback
 const pointerArr: IPointer[] = [];
 
-function addPointer (event: ICorrectedPointerEvent): IPointer {
+function addPointer(event: ICorrectedPointerEvent): IPointer {
     const pointerObj: IPointer = {
         pointerId: event.pointerId,
         lastPageX: null,
@@ -81,7 +81,7 @@ function addPointer (event: ICorrectedPointerEvent): IPointer {
     return pointerObj;
 }
 
-function getPointer (event: ICorrectedPointerEvent): IPointer | null {
+function getPointer(event: ICorrectedPointerEvent): IPointer | null {
     for (let i = pointerArr.length - 1; i >= 0; i--) {
         if (event.pointerId === pointerArr[i].pointerId) {
             return pointerArr[i];
@@ -90,7 +90,7 @@ function getPointer (event: ICorrectedPointerEvent): IPointer | null {
     return null;
 }
 
-function getButtonStr (buttons: number): TPointerButton | undefined {
+function getButtonStr(buttons: number): TPointerButton | undefined {
     switch (buttons) {
         case 1:
             return 'left';
@@ -104,7 +104,7 @@ function getButtonStr (buttons: number): TPointerButton | undefined {
 }
 
 const pressureNormalizer = new PressureNormalizer();
-const timeStampOffset = eventUsesHighResTimeStamp() ? 0 : -performance.timing.navigationStart;
+const timeStampOffset = eventUsesHighResTimeStamp() ? 0 : -performance?.timing?.navigationStart || 0;
 
 
 const pointerDownEvt = hasPointerEvents ? 'pointerdown' : 'mousedown';
@@ -119,12 +119,12 @@ const pointerEnterEvt = hasPointerEvents ? 'pointerenter' : 'mouseenter';
  * More trustworthy pointer attributes. that behave the same across browsers.
  * returns a new object. Also attaches itself to the orig event. -> event.corrected
  */
-function correctPointerEvent (event: PointerEvent | TExtendedDOMPointerEvent): ICorrectedPointerEvent {
+function correctPointerEvent(event: PointerEvent | TExtendedDOMPointerEvent): ICorrectedPointerEvent {
     if ('corrected' in event) {
         return event.corrected;
     }
 
-    function determineButtons (): number {
+    function determineButtons(): number {
         if (event.buttons !== undefined) {
             return event.buttons;
         }
@@ -138,7 +138,7 @@ function correctPointerEvent (event: PointerEvent | TExtendedDOMPointerEvent): I
         fifth:	4 -> 16
          */
         if (event.button !== undefined) { // old safari on mac has no buttons. remove eventually.
-            return [1,4,2,8,16][event.button];
+            return [1, 4, 2, 8, 16][event.button];
         }
         return 0;
     }
@@ -259,7 +259,7 @@ export class PointerListener {
     private readonly onTouchCancel: ((e: TouchEvent) => void) | undefined;
 
 
-    private getDragObj (pointerId: number): IDragObj | null {
+    private getDragObj(pointerId: number): IDragObj | null {
         for (let i = 0; i < this.dragObjArr.length; i++) {
             if (pointerId === this.dragObjArr[i].pointerId) {
                 return this.dragObjArr[i];
@@ -268,7 +268,7 @@ export class PointerListener {
         return null;
     }
 
-    private removeDragObj (pointerId: number): IDragObj | null {
+    private removeDragObj(pointerId: number): IDragObj | null {
         let removedDragObj: IDragObj | null = null;
         for (let i = 0; i < this.dragPointerIdArr.length; i++) {
             if (this.dragPointerIdArr[i] === pointerId) {
@@ -284,7 +284,7 @@ export class PointerListener {
     /**
      * Creates a value for onPointer, from a pointer event handler.
      */
-    private createPointerOutEvent (
+    private createPointerOutEvent(
         typeStr: TPointerEventType,
         correctedEvent: ICorrectedPointerEvent,
         custom?: Partial<IPointerEvent>,
@@ -333,14 +333,14 @@ export class PointerListener {
         return result;
     }
 
-    private setupDocumentListeners () {
+    private setupDocumentListeners() {
         this.windowOnPointerMove && document.addEventListener(pointerMoveEvt, this.windowOnPointerMove);
         this.windowOnPointerUp && document.addEventListener(pointerUpEvt, this.windowOnPointerUp);
         this.windowOnPointerLeave && document.addEventListener(pointerCancelEvt, this.windowOnPointerLeave);
         this.windowOnPointerLeave && document.addEventListener(pointerLeaveEvt, this.windowOnPointerLeave);
     }
 
-    private destroyDocumentListeners () {
+    private destroyDocumentListeners() {
         this.windowOnPointerMove && document.removeEventListener(pointerMoveEvt, this.windowOnPointerMove);
         this.windowOnPointerUp && document.removeEventListener(pointerUpEvt, this.windowOnPointerUp);
         this.windowOnPointerLeave && document.removeEventListener(pointerCancelEvt, this.windowOnPointerLeave);
@@ -350,7 +350,7 @@ export class PointerListener {
 
     // ---- public ----
 
-    constructor (p: IPointerListenerParams) {
+    constructor(p: IPointerListenerParams) {
         this.targetElement = p.target;
         this.onPointerCallback = p.onPointer;
         this.onWheelCallback = p.onWheel;
@@ -398,7 +398,7 @@ export class PointerListener {
                 this.onPointerCallback && this.onPointerCallback(outEvent);
             };
 
-            this.onPointerDown = (event: PointerEvent, onSkipGlobal? : boolean) => {
+            this.onPointerDown = (event: PointerEvent, onSkipGlobal?: boolean) => {
 
                 //BB.throwOut('pointerdown ' + event.pointerId + ' | ' + dragPointerIdArr.length);
                 const correctedEvent = correctPointerEvent(event);
@@ -630,7 +630,7 @@ export class PointerListener {
         }
     }
 
-    destroy (): void {
+    destroy(): void {
         if (this.isDestroyed) {
             return;
         }
@@ -650,4 +650,3 @@ export class PointerListener {
     }
 
 }
-
